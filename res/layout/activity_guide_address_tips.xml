@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#99000000" >
+
+    <ImageView
+        android:id="@+id/iv_guide_add_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@null"
+        android:paddingTop="5dp"
+        android:src="@drawable/guide_add_address" />
+
+    <ImageView
+        android:id="@+id/iv_guide_edit_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:paddingTop="60dp"
+        android:src="@drawable/guide_edit_address"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/iv_guide_delete_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:paddingTop="60dp"
+        android:src="@drawable/guide_delete_address"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/iv_guide_address_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:paddingBottom="30dp"
+        android:src="@drawable/guide_tips_ok" />
+
+</RelativeLayout>

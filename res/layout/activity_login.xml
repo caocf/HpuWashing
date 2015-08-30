@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/dark_blue"
+    android:gravity="center"
+    android:padding="25dp"
+    tools:context="com.edaixi_client.activity.LoginActivity" >
+
+    <ImageView
+        android:id="@+id/login_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:src="@drawable/login_logo" />
+
+    <RelativeLayout
+        android:id="@+id/ll_show_tel_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_logo"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal" >
+
+        <com.edaixi.view.CleanEditText
+            android:id="@+id/phone_edit"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/login_edit_default"
+            android:drawableLeft="@drawable/phone_icon"
+            android:drawableRight="@drawable/clean_press"
+            android:hint="@string/qingshurushoujihao"
+            android:inputType="phone"
+            android:maxLength="11"
+            android:paddingLeft="5dp"
+            android:paddingRight="10dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/bindcard_activity_cardedit_hintcolor"
+            android:textCursorDrawable="@null"
+            android:textSize="16sp" >
+        </com.edaixi.view.CleanEditText>
+
+        <Button
+            android:id="@+id/authcode_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/phone_edit"
+            android:layout_alignTop="@id/phone_edit"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/phone_edit"
+            android:background="@drawable/get_authcode_btn_bg"
+            android:gravity="center"
+            android:text="@string/huoquyanzhengma"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <com.edaixi.view.CleanEditText
+        android:id="@+id/auth_code_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_show_tel_code"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/login_edit_default"
+        android:digits="0123456789abcdefghijklmnopqrstuvwxyz"
+        android:drawableLeft="@drawable/key_icon"
+        android:drawableRight="@drawable/clean_press"
+        android:hint="@string/qingshuruyanzhengma"
+        android:inputType="number"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:textColor="@android:color/black"
+        android:textColorHint="@color/bindcard_activity_cardedit_hintcolor"
+        android:textCursorDrawable="@null"
+        android:textSize="16sp" >
+    </com.edaixi.view.CleanEditText>
+
+    <TextView
+        android:id="@+id/login_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/auth_code_edit"
+        android:layout_alignRight="@id/auth_code_edit"
+        android:layout_below="@+id/auth_code_edit"
+        android:gravity="center"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/get_authcode_btn_bg"
+        android:padding="10dp"
+        android:text="@string/lijidenglu"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/server_tel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/login_btn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@id/login_btn"
+        android:gravity="center"
+        android:text="若未收到验证码请拨打400-818-7171"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>

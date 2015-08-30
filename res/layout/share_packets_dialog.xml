@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center" >
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:scrollbars="vertical" >
+
+        <TextView
+            android:id="@+id/share_tv_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="30dp"
+            android:paddingTop="15dp"
+            android:text="恭喜你获得14张优惠券 \n 分享至："
+            android:textColor="#3e3e3e"
+            android:textSize="17sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/share_wechat_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:src="@drawable/share_wechat" />
+
+            <TextView
+                android:id="@+id/share_wechat_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/share_wechat_logo"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="微信好友"
+                android:textColor="#3e3e3e"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/share_friends_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/share_wechat_logo"
+                android:paddingLeft="45dp"
+                android:src="@drawable/share_friends" />
+
+            <TextView
+                android:id="@+id/share_friends_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/share_friends_logo"
+                android:layout_alignRight="@id/share_friends_logo"
+                android:layout_below="@id/share_friends_logo"
+                android:layout_toRightOf="@id/share_wechat_text"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:paddingLeft="45dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:text="朋友圈"
+                android:textColor="#3e3e3e"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="30dp"
+            android:background="@color/gray"
+            android:paddingBottom="10dp" />
+
+        <TextView
+            android:id="@+id/share_tv_cancle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:text="下次再说"
+            android:textColor="@color/dark_blue"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</ScrollView>

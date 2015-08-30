@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white" >
+
+    <ImageView
+        android:id="@+id/iv_no_address_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:contentDescription="@null"
+        android:src="@drawable/no_adress_tips"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/no_address_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_no_address_tips"
+        android:layout_centerInParent="true"
+        android:paddingTop="10dp"
+        android:text="@string/ninhaimeiyoutianjiadizhi"
+        android:textSize="17sp"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/order_title"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/e_h_top_bar" >
+
+        <ImageView
+            android:id="@+id/order_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:contentDescription="@null"
+            android:src="@drawable/login_back_btn" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="地址列表"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/select_list_add_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:padding="4dp"
+            android:text="添加地址"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/order_title"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_address_true_tips"
+            style="@style/textsize_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:text="可用地址"
+            android:visibility="gone" />
+
+        <com.edaixi.swipemenu.widget.SwipeMenuListView
+            android:id="@+id/order_address_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@color/myaddress_activity_list_dividercolor"
+            android:dividerHeight="0.5dp"
+            android:listSelector="@drawable/activity_coupon_list_selector"
+            android:overScrollMode="never" />
+
+        <TextView
+            android:id="@+id/tv_address_false_tips"
+            style="@style/textsize_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:text="不可用地址"
+            android:visibility="gone" />
+
+        <com.edaixi.swipemenu.widget.SwipeMenuListView
+            android:id="@+id/order_address_list_notuse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@color/myaddress_activity_list_dividercolor"
+            android:dividerHeight="0.5dp"
+            android:listSelector="@drawable/activity_coupon_list_selector"
+            android:overScrollMode="never" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/selectlist_no_wifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:contentDescription="@null"
+        android:src="@drawable/wifi_failure"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/selectlist_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/selectlist_no_wifi"
+        android:layout_centerHorizontal="true"
+        android:background="@anim/frame_loading"
+        android:contentDescription="@null"
+        android:visibility="gone" />
+
+</RelativeLayout>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_delivery_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white" >
+
+    <TextView
+        android:id="@+id/tv_delivery_text_newest"
+        style="@style/textsize_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:autoLink="phone"
+        android:paddingRight="10dp"
+        android:textColor="#222222" />
+
+    <TextView
+        android:id="@+id/tv_delivery_text_past"
+        style="@style/textsize_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:autoLink="phone"
+        android:paddingRight="10dp"
+        android:textColor="#222222"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_delivery_time_text"
+        style="@style/textsize_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_delivery_text_newest"
+        android:layout_marginLeft="30dp"
+        android:paddingTop="10dp"
+        android:textColor="#555555" />
+
+    <TextView
+        android:id="@+id/tv_delivery_time_past_text"
+        style="@style/textsize_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_delivery_text_past"
+        android:layout_marginLeft="30dp"
+        android:paddingTop="10dp"
+        android:textColor="#555555"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_bottom_line_item_master"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@id/tv_delivery_text_newest"
+        android:layout_below="@id/tv_delivery_time_text"
+        android:layout_marginTop="10dp"
+        android:background="@color/gray"
+        android:contentDescription="@null" />
+
+    <ImageView
+        android:id="@+id/iv_bottom_line_item_branch"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@id/tv_delivery_time_past_text"
+        android:layout_below="@id/tv_delivery_time_past_text"
+        android:layout_marginTop="10dp"
+        android:background="@color/gray"
+        android:contentDescription="@null"
+        android:visibility="gone" />
+
+    <com.edaixi.view.DeliveryLineViewMaster
+        android:id="@+id/dl_delivert_master"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_bottom_line_item_master"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:contentDescription="@null" />
+
+    <com.edaixi.view.DeliveryLineView
+        android:id="@+id/dl_delivert_branch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_bottom_line_item_branch"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="12.5dp"
+        android:visibility="gone" />
+
+</RelativeLayout>

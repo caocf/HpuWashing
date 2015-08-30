@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_rongchain_progress_dialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rongchain_progress_dialog_bg"
+    android:gravity="center" >
+
+    <View
+        android:id="@+id/line_progress"
+        android:layout_width="20dp"
+        android:layout_height="10dp"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/loadingImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/line_progress"
+        android:layout_centerHorizontal="true"
+        android:background="@anim/rongchain_progress_round"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/id_tv_loadingmsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loadingImageView"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp"
+        android:text="小e,加载中..."
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+</RelativeLayout>

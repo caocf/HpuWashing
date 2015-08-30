@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.edaixi_client.activity.MainActivity" >
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mviewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/main_bottom_line" >
+    </android.support.v4.view.ViewPager>
+
+    <View
+        android:id="@+id/main_bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_above="@+id/ll_main_title"
+        android:background="#b4b4b4" />
+
+    <LinearLayout
+        android:id="@+id/ll_main_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/rl_main_washing"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:background="#fafafa" >
+
+            <ImageView
+                android:id="@+id/iv_main_washing"
+                android:layout_width="40dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true"
+                android:focusable="true"
+                android:src="@drawable/wash_default_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_main_order"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#fafafa" >
+
+            <ImageView
+                android:id="@+id/iv_main_order"
+                android:layout_width="40dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/order_default_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_main_mine"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#fafafa" >
+
+            <ImageView
+                android:id="@+id/iv_main_mine"
+                android:layout_width="40dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/my_default_icon" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

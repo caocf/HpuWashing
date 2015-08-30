@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RadioGroup
+        android:id="@+id/order_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/e_h_top_bar"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/serving_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="@drawable/left_selected"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="  服务中  "
+            android:textColor="@color/dark_blue" />
+
+        <RadioButton
+            android:id="@+id/completed_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="@drawable/right_default"
+            android:button="@null"
+            android:gravity="center"
+            android:text="  已完成  " />
+    </RadioGroup>
+
+    <com.edaixi.view.XListView
+        android:id="@+id/order_xListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/order_radiogroup"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:visibility="invisible" >
+    </com.edaixi.view.XListView>
+
+    <TextView
+        android:id="@+id/tv_order_fragment_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/order_xListView"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="没有更多订单了"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_no_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@null"
+        android:src="@drawable/no_order"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_no_net_wififail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@null"
+        android:src="@drawable/wifi_failure"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_no_order"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@anim/frame_loading"
+        android:contentDescription="@null"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/order_login_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="30dp"
+            android:text="您还没有登录,请先登录!"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/order_login_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cancel_press"
+            android:gravity="center"
+            android:text="登录"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</RelativeLayout>

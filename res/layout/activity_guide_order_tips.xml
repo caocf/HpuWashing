@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#99000000" >
+
+    <ImageView
+        android:id="@+id/iv_guide_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:paddingTop="50dp"
+        android:src="@drawable/order_price_tips" />
+
+    <ImageView
+        android:id="@+id/iv_guide_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:paddingTop="100dp"
+        android:src="@drawable/order_add_address"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/iv_guide_ordertime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:paddingTop="200dp"
+        android:src="@drawable/order_service_time"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/iv_guide_order_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:paddingBottom="30dp"
+        android:src="@drawable/guide_tips_ok" />
+
+</RelativeLayout>

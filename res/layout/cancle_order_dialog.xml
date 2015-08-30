@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/coupon_exchange_dialog_bg"
+    android:gravity="center" >
+
+    <TextView
+        android:id="@+id/tv_cancle_order_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#BdBdBd"
+        android:gravity="center"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:text="@string/cancle_order_title"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_cancle_order_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_cancle_order_title"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:text="@string/cancle_order_tips"
+        android:textColor="@color/red" />
+
+    <ListView
+        android:id="@+id/lv_show_cancle_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_cancle_order_tips"
+        android:cacheColorHint="@null"
+        android:divider="@null"
+        android:dividerHeight="0dp" >
+    </ListView>
+
+    <View
+        android:id="@+id/order_cancle_dialog_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/lv_show_cancle_item"
+        android:background="@color/gray" />
+
+    <LinearLayout
+        android:id="@+id/ll_cancle_order_btn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/order_cancle_dialog_line"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2.1" >
+
+        <TextView
+            android:id="@+id/tv_btn_confim"
+            style="@style/textsize_4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/querenquxiao" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:background="@color/gray" />
+
+        <TextView
+            android:id="@+id/tv_btn_cancle"
+            style="@style/textsize_4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/fanhui" />
+    </LinearLayout>
+
+</RelativeLayout>
