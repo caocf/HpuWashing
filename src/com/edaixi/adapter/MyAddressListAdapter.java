@@ -16,12 +16,14 @@ public class MyAddressListAdapter extends BasicAdapter {
 	private MyAddressDataSet mDataSet = null;
 	private boolean misorder = true;
 	private boolean firstcome = true;
+	private Handler handler;
 
 	public MyAddressListAdapter(Context mContext, MyAddressDataSet mDataSet,
-			boolean isorder, boolean firstcome, ListView list) {
+			boolean isorder, boolean firstcome, Handler handler, ListView list) {
 		super(mContext);
 		this.mDataSet = mDataSet;
 		misorder = isorder;
+		this.handler = handler;
 
 	}
 

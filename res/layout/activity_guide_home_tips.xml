@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#99000000" >
+
+    <ImageView
+        android:id="@+id/iv_guide_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:paddingTop="5dp"
+        android:src="@drawable/guide_tips_city" />
+
+    <ImageView
+        android:id="@+id/iv_guide_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@null"
+        android:paddingTop="5dp"
+        android:src="@drawable/guide_tips_area"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/iv_guide_washing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:paddingLeft="20dp"
+        android:paddingTop="220dp"
+        android:src="@drawable/guide_tips_washing"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/iv_guide_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_guide_washing"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="30dp"
+        android:src="@drawable/guide_tips_ok" />
+
+</RelativeLayout>

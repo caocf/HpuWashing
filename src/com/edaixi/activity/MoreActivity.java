@@ -217,8 +217,6 @@ public class MoreActivity extends BaseActivity {
 												int which) {
 											AppConfig.getInstance().setIslogin(
 													false);
-											getsaveutils_instants().saveStrSP(
-													"user_id", "");
 											getsaveutils_instants().saveBoolSP(
 													KeepingData.LOGINED, false);
 											getsaveutils_instants()

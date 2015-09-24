@@ -7,13 +7,10 @@
 package com.edaixi.activity;
 
 import java.io.File;
-
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -25,19 +22,17 @@ import com.edaixi.adapter.MyViewPagerAdapter;
 import com.edaixi.data.AppConfig;
 import com.edaixi.data.EdaixiApplication;
 import com.edaixi.data.KeepingData;
-import com.edaixi.fragment.HomeFragmentBak;
+import com.edaixi.fragment.HomeFragment;
 import com.edaixi.fragment.MineFragment;
 import com.edaixi.fragment.OrderFragment;
+import com.edaixi.util.LogUtil;
 import com.edaixi.util.OrderListAdapterEvent;
 import com.edaixi.util.SaveUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.tendcloud.tenddata.TCAgent;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.update.UmengDialogButtonListener;
 import com.umeng.update.UmengUpdateAgent;
-import com.umeng.update.UpdateStatus;
-
 import de.greenrobot.dao.query.QueryBuilder;
 import de.greenrobot.event.EventBus;
 
@@ -87,11 +82,10 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 
 		saveUtils = new SaveUtils(MainActivity.this);
 		judgeCityIsAviable();
-
-		// 友盟更新逻辑
 		UmengUpdateAgent.setUpdateOnlyWifi(false);
-		prepare4UmengUpdate();
-		// 友盟更新逻辑
+		UmengUpdateAgent.update(this);
+		UmengUpdateAgent.forceUpdate(MainActivity.this);
+
 		ViewUtils.inject(this);
 		init(this);
 
@@ -99,7 +93,7 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 		vp.setOffscreenPageLimit(3);
 		mAdapter = null;
 		fms_1s = new Fragment[3];
-		fms_1s[0] = new HomeFragmentBak();
+		fms_1s[0] = new HomeFragment();
 		fms_1s[1] = new OrderFragment();
 		fms_1s[2] = new MineFragment();
 		mAdapter = new MyViewPagerAdapter(getSupportFragmentManager(), fms_1s,
@@ -146,51 +140,6 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 			public void onPageScrollStateChanged(int state) {
 			};
 		});
-	}
-
-	
-	private void prepare4UmengUpdate() {
-		MobclickAgent.updateOnlineConfig(this);
-		// 获取友盟在线参数
-		String UpdateParas = MobclickAgent.getConfigParams(this, "UpdateParas");
-		UmengUpdateAgent.update(this);
-		UmengUpdateAgent.forceUpdate(MainActivity.this);
-		if (TextUtils.isEmpty(UpdateParas)) {
-			return;
-		}
-		// 转换为数组
-		String[] UpdateParasArray = UpdateParas.split(";");
-		UmengUpdateAgent.update(this); // 调用umeng更新接口
-		String curr_version_name = null;
-		try {
-			curr_version_name = getPackageManager().getPackageInfo(
-					getPackageName(), 0).versionName;
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}
-		String aimString = null;
-		for (String string : UpdateParasArray) {
-			if (string.contains(curr_version_name)) {
-				aimString = string;
-			}
-		}
-		final String aimStrings = aimString;
-		// 对话框按键的监听，对于强制更新的版本，如果用户未选择更新的行为，关闭app
-		UmengUpdateAgent.setDialogListener(new UmengDialogButtonListener() {
-
-			@Override
-			public void onClick(int status) {
-				switch (status) {
-				case UpdateStatus.Update:
-					break;
-				case UpdateStatus.NotNow:
-					if (aimStrings != null && aimStrings.contains("F")) {
-						finish();
-					}
-					break;
-				}
-			}
-		});
 
 	}
 
@@ -207,13 +156,12 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 		MobclickAgent.onPageEnd("MainActivity");
 		MobclickAgent.onPause(this);
 	}
-	
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.rl_main_washing:
-			TCAgent.onEvent(MainActivity.this, "底部导航栏_首页");
+			TCAgent.onEvent(MainActivity.this, "底部导航栏_洗衣");
 			vp.setCurrentItem(0);
 			iv_main_washing.setImageResource(R.drawable.wash_press_icon);
 			iv_main_order.setImageResource(R.drawable.order_default_icon);
@@ -225,8 +173,6 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 			iv_main_washing.setImageResource(R.drawable.wash_default_icon);
 			iv_main_order.setImageResource(R.drawable.order_press_icon);
 			iv_main_mine.setImageResource(R.drawable.my_default_icon);
-			EventBus.getDefault().post(
-					new OrderListAdapterEvent("TopServingOrderList"));
 			break;
 		case R.id.rl_main_mine:
 			TCAgent.onEvent(MainActivity.this, "底部导航栏_我的");
@@ -323,5 +269,6 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 				AppConfig.getInstance().setIsopendefaultcity(false);
 			}
 		}
+
 	}
 }

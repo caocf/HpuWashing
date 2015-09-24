@@ -23,7 +23,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 public class NetUtil {
 	public static final String TAG_POST = "Post方式";
@@ -95,10 +94,9 @@ public class NetUtil {
 		// 新建一个URL对象
 		URL url = new URL(path + param);
 		// 打开一个HttpURLConnection连接
-		LogUtil.e("HttpURLConnection连接" + url);
 		HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 		// 设置连接超时时间
-		urlConn.setConnectTimeout(10 * 1000);
+		urlConn.setConnectTimeout(5 * 1000);
 		// Post请求必须设置允许输出
 		urlConn.setDoOutput(true);
 		// Post请求不能使用缓存
@@ -117,7 +115,6 @@ public class NetUtil {
 			// 获取返回的数据
 			byte[] data = readStream(urlConn.getInputStream());
 			result = new String(data, Constants.ENCODE);
-			LogUtil.e(" 登陆接口返回的数据--" + result);
 		} else {
 			result = "-1";
 		}
@@ -155,7 +152,7 @@ public class NetUtil {
 		// 打开一个HttpURLConnection连接
 		HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 		// 设置连接超时时间
-		urlConn.setConnectTimeout(10 * 1000);
+		urlConn.setConnectTimeout(5 * 1000);
 		// Post请求必须设置允许输出
 		// urlConn.setDoOutput(true);
 		// Post请求不能使用缓存
@@ -206,6 +203,7 @@ public class NetUtil {
 			params.put("phone", phone);
 			params.put("code", code);
 			params.put("push_token", "");
+			System.out.println(path + params);
 			try {
 				result = requestByPost(path, params);
 			} catch (Exception e) {
@@ -219,7 +217,6 @@ public class NetUtil {
 					String datajson = json.getString("data");
 					Userbean userbean = gson.fromJson(datajson, Userbean.class);
 					saveUtils.saveStrSP("user_token", userbean.getUsertoken());
-					LogUtil.e("获取到的user_token---:"+userbean.getUsertoken());
 					saveUtils.saveStrSP("user_id", userbean.getUser_id());
 					mAppConfig = AppConfig.getInstance();
 					mAppConfig.setUserId(userbean.getUser_id());
@@ -236,7 +233,6 @@ public class NetUtil {
 							saveUtils.saveBoolSP(KeepingData.IS_FIRSTLOGINED,
 									false);
 							saveUtils.saveStrSP("user_token", "");
-							saveUtils.saveStrSP("user_id", "");
 							str = mAppConfig.ALREADYLOGIN;
 						}
 					} catch (JSONException e) {

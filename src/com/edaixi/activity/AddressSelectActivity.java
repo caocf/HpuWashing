@@ -28,7 +28,6 @@ import com.edaixi.swipemenu.widget.SwipeMenuListView;
 import com.edaixi.swipemenu.widget.SwipeMenuListView.OnMenuItemClickListener;
 import com.edaixi.swipemenu.widget.Swipemenucreater;
 import com.edaixi.util.Constants;
-import com.edaixi.util.LogUtil;
 import com.edaixi.util.SaveUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -77,9 +76,6 @@ public class AddressSelectActivity extends BaseActivity implements
 
 				switch (msg.what) {
 				case GETADSSUCCED:
-					LogUtil.e("地址选择列表获取" + msg.obj);
-					selectlist_no_wifi.setVisibility(View.GONE);
-					selectlist_loading.setVisibility(View.GONE);
 					Type contentType = new TypeToken<HttpCommonBean>() {
 					}.getType();
 					HttpCommonBean mInfo = null;
@@ -128,7 +124,6 @@ public class AddressSelectActivity extends BaseActivity implements
 					}
 					break;
 				case GETADSFAILD:
-					LogUtil.e("地址选择列表获取失败" + msg.obj);
 					showdialog("获取地址失败");
 					break;
 				case DELETEADSSUCCED:
@@ -265,15 +260,10 @@ public class AddressSelectActivity extends BaseActivity implements
 			startActivity(intent);
 			break;
 		case R.id.order_back_btn:
-			AppConfig.getInstance().setFillAddressAuto(true);
 			finish(0, 0);
 			break;
 		case R.id.selectlist_no_wifi:
 			selectlist_loading.setVisibility(View.VISIBLE);
-			tv_address_true_tips.setVisibility(View.GONE);
-			order_address_list.setVisibility(View.GONE);
-			tv_address_false_tips.setVisibility(View.GONE);
-			order_address_list_notuse.setVisibility(View.GONE);
 			new Thread(new Runnable() {
 				public void run() {
 					try {
@@ -384,5 +374,4 @@ public class AddressSelectActivity extends BaseActivity implements
 			}
 		}
 	}
-
 }

@@ -1,10 +1,7 @@
 package com.edaixi.fragment;
 
-import java.lang.reflect.Type;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.json.JSONException;
@@ -38,8 +35,6 @@ import com.edaixi.activity.MyAddressActivity;
 import com.edaixi.activity.R;
 import com.edaixi.activity.WebActivity;
 import com.edaixi.data.KeepingData;
-import com.edaixi.modle.ExtraCardBean;
-import com.edaixi.modle.GetCouponsBean;
 import com.edaixi.modle.Icard;
 import com.edaixi.util.Constants;
 import com.edaixi.util.LogUtil;
@@ -50,42 +45,32 @@ import com.edaixi.util.SaveUtils;
 import com.edaixi.view.SharePacketsDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import com.tendcloud.tenddata.TCAgent;
 
 import de.greenrobot.event.EventBus;
 
 @SuppressLint("HandlerLeak")
 public class MineFragment extends BaseFragment {
-	private final static int[] mineListIcons = { R.drawable.mine_coupon_logo,
-			R.drawable.mine_address_logo, R.drawable.mine_share_logo,
-			R.drawable.mine_bindcard_logo, R.drawable.mine_idea_logo,
-			R.drawable.mine_setting_logo };
-	private final static String[] mineListTitles = { "优惠券", "常用地址", "分享给好友",
-			"绑定实体卡", "意见反馈", "更多设置" };
+	private final static int[] mineListIcons = { R.drawable.mine_balance_logo,
+			R.drawable.mine_coupon_logo, R.drawable.mine_address_logo,
+			R.drawable.mine_share_logo, R.drawable.mine_bindcard_logo,
+			R.drawable.mine_idea_logo, R.drawable.mine_setting_logo };
+	private final static String[] mineListTitles = { "余额", "优惠券", "常用地址",
+			"分享给好友", "绑定实体卡", "意见反馈", "更多设置" };
 	private TextView user_tel_text;
-	private TextView tv_mine_item_icard;
-	private TextView tv_mine_recharge_btn;
-	private TextView tv_mine_icard_uxury;
-	private TextView tv_mine_luxury_text;
-	private TextView tv_mine_luxury_time;
 	private ListView my_list;
 	private MineAdapter mineAdapter;
 	HashMap<String, String> parms;
 	boolean isrefresh = false;
 	private SaveUtils saveUtils;
 	MyhttpUtils utils;
-	private String coin;
+	private String coin = "";
 	private final int GETICARDSUCCED = 0;
 	private final int GETICARDFAILD = 1;
-	private final int GETEXTRAICARDSUCCED = 2;
-	private final int GETEXTRAICARDFAILD = 3;
 	private Icard icard;
 	private ImageView addresslist_no_order;
 	private ImageView addresslist_loading;
 	private RelativeLayout rl_mine_title;
-	private RelativeLayout rl_mine_recharge;
-	private RelativeLayout rl_mine_luxury;
 
 	public MineFragment() {
 
@@ -97,7 +82,6 @@ public class MineFragment extends BaseFragment {
 			switch (msg.what) {
 			case GETICARDSUCCED:
 				my_list.setVisibility(View.VISIBLE);
-				rl_mine_recharge.setVisibility(View.VISIBLE);
 				addresslist_no_order.setVisibility(View.GONE);
 				try {
 					JSONObject object = new JSONObject((String) msg.obj);
@@ -106,21 +90,12 @@ public class MineFragment extends BaseFragment {
 						icard = gson.fromJson(object.getString("data"),
 								Icard.class);
 						coin = icard.getCoin();
+						LogUtil.e("获取金额近来来了--------coin" + coin);
 						saveUtils.saveStrSP("coin", coin);
-						if (saveUtils.getBoolSP(KeepingData.LOGINED)) {
-							if (!TextUtils.isEmpty(coin) && coin != "") {
-								DecimalFormat df = new DecimalFormat("0.00");
-								double d1 = Double.parseDouble(coin);
-								tv_mine_item_icard.setTextColor(getResources()
-										.getColor(R.color.red));
-								tv_mine_item_icard.setText("￥" + df.format(d1));
-								mineAdapter.notifyDataSetChanged();
-							}
-						} else {
-							tv_mine_item_icard.setText("暂无信息");
-							tv_mine_item_icard.setTextColor(getResources()
-									.getColor(R.color.falseaddress));
-						}
+						LogUtil.e("获取金额近来来了--------0");
+						mineAdapter.coinBak = coin;
+						mineAdapter.notifyDataSetChanged();
+						LogUtil.e("获取金额近来来了--------1");
 					}
 				} catch (JsonSyntaxException e) {
 					e.printStackTrace();
@@ -129,34 +104,6 @@ public class MineFragment extends BaseFragment {
 				}
 				break;
 			case GETICARDFAILD:
-				break;
-			case GETEXTRAICARDSUCCED:
-				String extracardString = msg.obj.toString();
-				Gson gson = new Gson();
-				GetCouponsBean fromJson = gson.fromJson(extracardString,
-						GetCouponsBean.class);
-				String data = fromJson.getData();
-				Type contentType = new TypeToken<ArrayList<ExtraCardBean>>() {
-				}.getType();
-				List<ExtraCardBean> mExtraCardBeans = null;
-				try {
-					mExtraCardBeans = gson.fromJson(data, contentType);
-					if (mExtraCardBeans.size() > 0) {
-						rl_mine_luxury.setVisibility(View.VISIBLE);
-						tv_mine_luxury_text.setVisibility(View.VISIBLE);
-						tv_mine_luxury_time.setVisibility(View.VISIBLE);
-						tv_mine_luxury_time.setText(mExtraCardBeans.get(0)
-								.getCreated_at()
-								+ "到"
-								+ mExtraCardBeans.get(0).getAvailable_at());
-					} else {
-						rl_mine_luxury.setVisibility(View.GONE);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-			case GETEXTRAICARDFAILD:
 				break;
 			default:
 				break;
@@ -170,33 +117,6 @@ public class MineFragment extends BaseFragment {
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_mine, container, false);
 		user_tel_text = (TextView) view.findViewById(R.id.user_tel_text);
-		tv_mine_item_icard = (TextView) view
-				.findViewById(R.id.tv_mine_item_icard);
-		tv_mine_recharge_btn = (TextView) view
-				.findViewById(R.id.tv_mine_recharge_btn);
-		tv_mine_recharge_btn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				TCAgent.onEvent(getActivity(), "我的页面_充值");
-				if (saveUtils.getBoolSP(KeepingData.LOGINED)) {
-					Intent intent = new Intent(getActivity(),
-							DepositActivity.class);
-					intent.putExtra("coin", coin);
-					startActivity(intent);
-				} else {
-					startActivity(new Intent(getActivity(), LoginActivity.class));
-				}
-			}
-		});
-		tv_mine_icard_uxury = (TextView) view
-				.findViewById(R.id.tv_mine_icard_uxury);
-		tv_mine_icard_uxury = (TextView) view
-				.findViewById(R.id.tv_mine_icard_uxury);
-		tv_mine_luxury_text = (TextView) view
-				.findViewById(R.id.tv_mine_luxury_text);
-		tv_mine_luxury_time = (TextView) view
-				.findViewById(R.id.tv_mine_luxury_time);
 		addresslist_no_order = (ImageView) view
 				.findViewById(R.id.addresslist_no_order);
 		addresslist_loading = (ImageView) view
@@ -204,15 +124,10 @@ public class MineFragment extends BaseFragment {
 		my_list = (ListView) view.findViewById(R.id.my_list);
 		my_list.setVerticalScrollBarEnabled(false);
 		rl_mine_title = (RelativeLayout) view.findViewById(R.id.rl_mine_title);
-		rl_mine_recharge = (RelativeLayout) view
-				.findViewById(R.id.rl_mine_recharge);
-		rl_mine_luxury = (RelativeLayout) view
-				.findViewById(R.id.rl_mine_luxury);
 
 		if (!NetUtil.getNetworkState(getActivity())) {
 			addresslist_no_order.setVisibility(View.VISIBLE);
 			my_list.setVisibility(View.GONE);
-			rl_mine_recharge.setVisibility(View.GONE);
 			rl_mine_title.setVisibility(View.VISIBLE);
 		}
 		initview();
@@ -270,6 +185,18 @@ public class MineFragment extends BaseFragment {
 					int position, long id) {
 				switch (position) {
 				case 0:
+					TCAgent.onEvent(getActivity(), "我的页面_充值");
+					if (saveUtils.getBoolSP(KeepingData.LOGINED)) {
+						Intent intent = new Intent(getActivity(),
+								DepositActivity.class);
+						intent.putExtra("coin", coin);
+						startActivity(intent);
+					} else {
+						startActivity(new Intent(getActivity(),
+								LoginActivity.class));
+					}
+					break;
+				case 1:
 					if (saveUtils.getBoolSP(KeepingData.LOGINED)) {
 						TCAgent.onEvent(getActivity(), "我的页面_优惠券");
 						Intent mIntent = new Intent(getActivity(),
@@ -283,7 +210,7 @@ public class MineFragment extends BaseFragment {
 								LoginActivity.class));
 					}
 					break;
-				case 1:
+				case 2:
 					if (saveUtils.getBoolSP(KeepingData.LOGINED)) {
 						startActivity(new Intent(getActivity(),
 								MyAddressActivity.class));
@@ -292,14 +219,14 @@ public class MineFragment extends BaseFragment {
 								LoginActivity.class));
 					}
 					break;
-				case 2:
+				case 3:
 					// 分享APP给好友
 					SharePacketsDialog showShare = new SharePacketsDialog(
 							getActivity(), R.style.customdialog_style,
 							R.layout.share_packets_dialog, true);
 					showShare.show();
 					break;
-				case 3:
+				case 4:
 					if (saveUtils.getBoolSP(KeepingData.LOGINED)) {
 						if (icard == null || icard.getRecard_sn() == null) {
 							startActivity(new Intent(getActivity(),
@@ -310,7 +237,7 @@ public class MineFragment extends BaseFragment {
 								LoginActivity.class));
 					}
 					break;
-				case 4:
+				case 5:
 					TCAgent.onEvent(getActivity(), "我的_意见反馈");
 					Intent intentIdea = new Intent();
 					Bundle mBundles = new Bundle();
@@ -319,15 +246,12 @@ public class MineFragment extends BaseFragment {
 					intentIdea.setClass(getActivity(), WebActivity.class);
 					startActivity(intentIdea);
 					break;
-				case 5:
+				case 6:
 					startActivity(new Intent(getActivity(), MoreActivity.class));
 					break;
 				}
 			}
 		});
-		if (saveUtils.getBoolSP(KeepingData.LOGINED)) {
-			getExtraIcard();
-		}
 	}
 
 	private class MineAdapter extends BaseAdapter {
@@ -385,7 +309,47 @@ public class MineFragment extends BaseFragment {
 					.setImageResource(mineListIcons[position]);
 			viHolder.tv_mine_item_text.setText(mineListTitles[position]);
 			switch (position) {
+			case 0:
+				viHolder.mine_item_divide_line.setVisibility(View.GONE);
+				if (saveUtils.getBoolSP(KeepingData.LOGINED)) {
+					viHolder.mine_recharge_btn.setVisibility(View.VISIBLE);
+					if (!TextUtils.isEmpty(coinBak) && coinBak != "") {
+						DecimalFormat df = new DecimalFormat("0.00");
+						double d1 = Double.parseDouble(coinBak);
+						viHolder.tv_mine_item_icard.setTextColor(getResources()
+								.getColor(R.color.red));
+						viHolder.tv_mine_item_icard
+								.setText("￥" + df.format(d1));
+					}
+				} else {
+					viHolder.tv_mine_item_icard.setText("暂无信息");
+					viHolder.tv_mine_item_icard.setTextColor(getResources()
+							.getColor(R.color.falseaddress));
+				}
+				break;
+			case 1:
+				viHolder.mine_recharge_btn.setVisibility(View.INVISIBLE);
+				viHolder.mine_item_divide_line.setVisibility(View.GONE);
+				if (saveUtils.getBoolSP(KeepingData.LOGINED)) {
+					viHolder.mine_recharge_btn.setVisibility(View.INVISIBLE);
+					viHolder.tv_mine_item_icard.setText("");
+				} else {
+					viHolder.tv_mine_item_icard.setText("暂无信息");
+					viHolder.tv_mine_item_icard.setTextColor(getResources()
+							.getColor(R.color.falseaddress));
+				}
+				break;
+			case 2:
+				viHolder.mine_recharge_btn.setVisibility(View.INVISIBLE);
+				viHolder.mine_item_divide_line.setVisibility(View.GONE);
+				viHolder.tv_mine_item_icard.setText("");
+				break;
 			case 3:
+				viHolder.mine_recharge_btn.setVisibility(View.INVISIBLE);
+				viHolder.mine_item_divide_line.setVisibility(View.GONE);
+				viHolder.tv_mine_item_icard.setText("");
+				break;
+			case 4:
 				viHolder.mine_recharge_btn.setVisibility(View.INVISIBLE);
 				viHolder.mine_item_divide_line.setVisibility(View.VISIBLE);
 				if (icard != null && icard.getRecard_sn() != null) {
@@ -399,13 +363,18 @@ public class MineFragment extends BaseFragment {
 					viHolder.tv_mine_item_icard.setText("");
 				}
 				break;
-			default:
+			case 5:
+				viHolder.mine_recharge_btn.setVisibility(View.INVISIBLE);
+				viHolder.mine_item_divide_line.setVisibility(View.GONE);
+				viHolder.tv_mine_item_icard.setText("");
+				break;
+			case 6:
 				viHolder.mine_recharge_btn.setVisibility(View.INVISIBLE);
 				viHolder.mine_item_divide_line.setVisibility(View.GONE);
 				viHolder.tv_mine_item_icard.setText("");
 				break;
 			}
-			if (position == 3 || position == 5) {
+			if (position == 4 || position == 6) {
 				viHolder.mine_item_short_line.setVisibility(View.INVISIBLE);
 			} else {
 				viHolder.mine_item_short_line.setVisibility(View.VISIBLE);
@@ -433,22 +402,12 @@ public class MineFragment extends BaseFragment {
 				handler, GETICARDSUCCED, GETICARDFAILD, false, false, true);
 	}
 
-	// 获取奢侈品年卡信息
-	private void getExtraIcard() {
-		HashMap<String, String> parm = new HashMap<String, String>();
-		parm.put("user_id", saveUtils.getStrSP(KeepingData.USER_ID));
-		((MainActivity) getActivity()).getdate(parm, Constants.getextraaccount,
-				handler, GETEXTRAICARDSUCCED, GETEXTRAICARDFAILD, false, true,
-				false);
-	}
-
 	@Override
 	public void onResume() {
 		super.onResume();
 		if (!NetUtil.getNetworkState(getActivity())) {
 			addresslist_no_order.setVisibility(View.VISIBLE);
 			my_list.setVisibility(View.GONE);
-			rl_mine_recharge.setVisibility(View.GONE);
 		}
 	}
 
@@ -459,12 +418,10 @@ public class MineFragment extends BaseFragment {
 			if (!NetUtil.getNetworkState(getActivity())) {
 				addresslist_no_order.setVisibility(View.VISIBLE);
 				my_list.setVisibility(View.GONE);
-				rl_mine_recharge.setVisibility(View.GONE);
 				rl_mine_title.setVisibility(View.VISIBLE);
 			} else {
 				my_list.setVisibility(View.VISIBLE);
 				rl_mine_title.setVisibility(View.VISIBLE);
-				rl_mine_recharge.setVisibility(View.VISIBLE);
 				Timer timer = new Timer();
 				timer.schedule(new TimerTask() {
 					@Override
@@ -500,5 +457,4 @@ public class MineFragment extends BaseFragment {
 			break;
 		}
 	}
-
 }

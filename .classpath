@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="libs/alipaysdk.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/android-support-v4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/fastjson.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/httpmime-4.1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/android-async-http-1.4.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/alipaysecsdk.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/alipayutdid.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/TalkingData_AdTracking_SDK_Android.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/nbs.newlens.agent.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/umeng-update-v2.6.0.1.jar"/>
+	<classpathentry kind="src" path="src-gen"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry exported="true" kind="lib" path="libs/eventbus-2.4.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gson-2.2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/libammsdk.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/TalkingDataAnalytics_V1.2.61.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/xUtils-2.6.14.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/avoscloud-v2.6.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/avospush-v2.6.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/greendao-1.3.0-beta-1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/umeng-analytics-v5.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/AMap_Services_V2.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/Android_Location_V1.3.1.jar"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>

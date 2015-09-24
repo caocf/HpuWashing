@@ -56,7 +56,7 @@ public class WX_Share {
 		} else {
 			webpage.webpageUrl = "http://apk.edaixi.com";
 		}
-		final WXMediaMessage msg = new WXMediaMessage(webpage);
+		WXMediaMessage msg = new WXMediaMessage(webpage);
 
 		if (Share_title != "") {
 			msg.title = Share_title;
@@ -68,30 +68,22 @@ public class WX_Share {
 		} else {
 			msg.description = "推荐一款洗衣神器—e袋洗！洗衣好便宜，夏季洗衣9元起！新用户下单立减20元，上门服务！洗衣就用e袋洗！(APP下载链接)";
 		}
-
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Bitmap thumb;
-				if (Share_image_url != "") {
-					try {
-						thumb = BitmapFactory
-								.decodeStream((InputStream) new URL(
-										Share_image_url).getContent());
-					} catch (Exception e) {
-						thumb = BitmapFactory.decodeResource(
-								context.getResources(),
-								R.drawable.wx_share_logo);
-						e.printStackTrace();
-					}
-					msg.setThumbImage(thumb);
-				} else {
-					thumb = BitmapFactory.decodeResource(
-							context.getResources(), R.drawable.ic_launcher);
-					msg.setThumbImage(thumb);
-				}
+		Bitmap thumb;
+		if (Share_image_url != "") {
+			try {
+				thumb = BitmapFactory.decodeStream((InputStream) new URL(
+						Share_image_url).getContent());
+			} catch (Exception e) {
+				thumb = BitmapFactory.decodeResource(context.getResources(),
+						R.drawable.wx_share_logo);
+				e.printStackTrace();
 			}
-		}).start();
+			msg.setThumbImage(thumb);
+		} else {
+			thumb = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.ic_launcher);
+			msg.setThumbImage(thumb);
+		}
 
 		SendMessageToWX.Req req = new SendMessageToWX.Req();
 		req.transaction = String.valueOf(System.currentTimeMillis());

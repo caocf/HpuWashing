@@ -1,0 +1,126 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/gray" >
+
+    <RelativeLayout
+        android:id="@+id/rl_home_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/e_h_top_bar" >
+
+        <TextView
+            android:id="@+id/loction_text"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:contentDescription="@null"
+            android:drawableRight="@drawable/home_location"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxEms="3"
+            android:singleLine="true"
+            android:text="定位中..."
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:contentDescription="@null"
+            android:src="@drawable/logo"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/deposit_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:contentDescription="@null"
+            android:src="@drawable/login_back_btn"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/home_servesarea_text"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:contentDescription="@null"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="服务范围"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_home_banner"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/rl_home_title" >
+
+        <com.edaixi.view.MyViewPager
+            android:id="@+id/myview_pager"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" >
+        </com.edaixi.view.MyViewPager>
+
+        <LinearLayout
+            android:id="@+id/pager_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignBottom="@+id/myview_pager"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray"
+        android:layout_below="@id/rl_home_banner" >
+
+        <GridView
+            android:id="@+id/home_grid_top"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:numColumns="2"
+            android:scrollbars="none"
+            android:gravity="center"
+            android:horizontalSpacing="1dp"
+            android:listSelector="@android:color/transparent" >
+        </GridView>
+
+        <View
+            android:id="@+id/home_line_middle"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/home_grid_top"
+            android:background="@color/gray" />
+
+        <com.edaixi.view.ExpandableHeightGridView
+            android:id="@+id/home_grid_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/home_line_middle"
+            android:horizontalSpacing="1dp"
+            android:numColumns="3"
+            android:scrollbars="none"
+            android:verticalSpacing="1dp" >
+        </com.edaixi.view.ExpandableHeightGridView>
+    </RelativeLayout>
+
+</RelativeLayout>

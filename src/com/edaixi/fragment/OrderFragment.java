@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.json.JSONException;
+import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -22,7 +24,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.edaixi.activity.LoginActivity;
 import com.edaixi.activity.MainActivity;
 import com.edaixi.activity.OrderDetialActivity;
@@ -42,7 +43,6 @@ import com.edaixi.view.XListView.IXListViewListener;
 import com.tendcloud.appcpa.Order;
 import com.tendcloud.appcpa.TalkingDataAppCpa;
 import com.tendcloud.tenddata.TCAgent;
-
 import de.greenrobot.event.EventBus;
 
 public class OrderFragment extends BaseFragment implements IXListViewListener {
@@ -72,7 +72,6 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 	private ImageView iv_no_order;
 	private ImageView iv_loading;
 	private ImageView iv_no_net_wififail;
-	private TextView tv_order_fragment_tips;
 	private Activity mActivity;
 	private ParseOrderList parseOrderList;
 	private ArrayList<OrderListItemBean> servingOrderList;
@@ -128,7 +127,6 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 						iv_no_order.setVisibility(View.GONE);
 						iv_loading.setVisibility(View.GONE);
 						iv_no_net_wififail.setVisibility(View.GONE);
-						order_xListView.setVisibility(View.VISIBLE);
 						if (orderAdapterServing == null
 								&& servingOrderList.size() > 0) {
 							orderAdapterServing = new OrderListAdapter(
@@ -136,15 +134,7 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 									SERINGORDER);
 							if (servingOrderList.size() > 4) {
 								order_xListView.setPullLoadEnable(true);
-							} else {
-								order_xListView.setPullLoadEnable(false);
-								if (servingOrderList.size() > 0) {
-									tv_order_fragment_tips
-											.setVisibility(View.VISIBLE);
-								} else {
-									tv_order_fragment_tips
-											.setVisibility(View.GONE);
-								}
+								order_xListView.haveOrderShow();
 							}
 							order_xListView.setAdapter(orderAdapterServing);
 							orderAdapterServing.notifyDataSetChanged();
@@ -212,12 +202,13 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 								isShowSharedialog = false;
 							}
 						}
+
 					} else {
+						order_login_btn.setVisibility(View.GONE);
+						order_login_tips.setVisibility(View.GONE);
 						iv_no_order.setVisibility(View.VISIBLE);
 						iv_no_order.setImageResource(R.drawable.no_order);
 						order_xListView.setVisibility(View.GONE);
-						order_login_btn.setVisibility(View.GONE);
-						order_login_tips.setVisibility(View.GONE);
 					}
 				}
 				break;
@@ -242,15 +233,9 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 									COMPLETEDORDER);
 							if (completedOrderList.size() > 4) {
 								order_xListView.setPullLoadEnable(true);
+								order_xListView.haveOrderShow();
 							} else {
-								order_xListView.setPullLoadEnable(false);
-								if (completedOrderList.size() > 0) {
-									tv_order_fragment_tips
-											.setVisibility(View.VISIBLE);
-								} else {
-									tv_order_fragment_tips
-											.setVisibility(View.GONE);
-								}
+
 							}
 							order_xListView.setAdapter(orderAdapterCompleted);
 						}
@@ -266,8 +251,6 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 										orderDetail.setClass(mActivity,
 												OrderDetialActivity.class);
 										Bundle bundle = new Bundle();
-										bundle.putString("OrderFlagData",
-												"COMPLETED");
 										if (position > 0) {
 											bundle.putSerializable(
 													"OrderListItembean",
@@ -280,34 +263,52 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 									}
 								});
 					} else {
-
+						order_login_btn.setVisibility(View.GONE);
+						order_login_tips.setVisibility(View.GONE);
 						iv_no_order.setVisibility(View.VISIBLE);
 						iv_no_order.setImageResource(R.drawable.no_order);
 						order_xListView.setVisibility(View.GONE);
-						order_login_btn.setVisibility(View.GONE);
-						order_login_tips.setVisibility(View.GONE);
 					}
 				}
 				break;
 			case 4:
+				break;
+			case 5:
+				String removeResultSucess = (String) msg.obj;
+				JSONObject jsonObject;
+				try {
+					jsonObject = new JSONObject(msg.obj.toString());
+					if (removeResultSucess != null
+							&& jsonObject.getBoolean("ret")) {
+						EventBus.getDefault().post(
+								new OrderListAdapterEvent("ShanChuDingDan"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				break;
+			case 6:
+				String removeResultFail = (String) msg.obj;
+				if (removeResultFail != null) {
+					((MainActivity) getActivity()).showdialog("删除订单失败，稍后重试...");
+				}
 				break;
 			case 7:
 				String loadMoreResultSucess = (String) msg.obj;
 				if (loadMoreResultSucess != null) {
 					ArrayList<OrderListItemBean> loadMoreServing = parseOrderList
 							.parseOrderList(loadMoreResultSucess.toString());
-					tv_order_fragment_tips.setVisibility(View.GONE);
 					if (loadMoreServing != null && loadMoreServing.size() > 0) {
 						if (loadMoreServing.size() > 4) {
 							order_xListView.setPullLoadEnable(true);
+							order_xListView.haveOrderShow();
 						} else {
-							Toast.makeText(getActivity(), "没有更多订单了",
-									Toast.LENGTH_SHORT).show();
+							order_xListView.noOrderShow();
 						}
 						isLoadMore = servingOrderList.addAll(loadMoreServing);
 					} else {
-						Toast.makeText(getActivity(), "没有更多订单了",
-								Toast.LENGTH_SHORT).show();
+						order_xListView.noOrderShow();
 					}
 					if (isLoadMore && XListViewTag) {
 						if (servingOrderList != null
@@ -324,22 +325,20 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 			case 9:
 				String loadCompletedSucess = (String) msg.obj;
 				if (loadCompletedSucess != null) {
-					tv_order_fragment_tips.setVisibility(View.GONE);
 					ArrayList<OrderListItemBean> loadMoreCompleted = parseOrderList
 							.parseOrderList(loadCompletedSucess.toString());
 					if (loadMoreCompleted != null
 							&& loadMoreCompleted.size() > 0) {
 						if (loadMoreCompleted.size() > 4) {
 							order_xListView.setPullLoadEnable(true);
+							order_xListView.haveOrderShow();
 						} else {
-							Toast.makeText(getActivity(), "没有更多订单了",
-									Toast.LENGTH_SHORT).show();
+							order_xListView.noOrderShow();
 						}
 						isLoadMoreCom = completedOrderList
 								.addAll(loadMoreCompleted);
 					} else {
-						Toast.makeText(getActivity(), "没有更多订单了",
-								Toast.LENGTH_SHORT).show();
+						order_xListView.noOrderShow();
 					}
 					if (isLoadMoreCom && !XListViewTag) {
 						if (completedOrderList != null
@@ -375,7 +374,7 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 			orderListParams.put("per_page", String.valueOf(perPage));
 			((MainActivity) getActivity()).getdate(orderListParams,
 					Constants.getoerderlist, handler, TUREMESSAGESERVING,
-					ERRORMESSAGESERVING, false, false, false);
+					ERRORMESSAGESERVING, false, false, true);
 		} else {
 			noNetDo();
 		}
@@ -498,6 +497,25 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 		}.execute();
 	}
 
+	/**
+	 * @author wei-spring
+	 * 
+	 */
+	public void removeOrder(String order_id) {
+		orderListParams.clear();
+		if (saveUtils.getStrSP("user_id") != null) {
+			orderListParams.put("user_id", saveUtils.getStrSP("user_id"));
+		}
+		if (AppConfig.getInstance().getCancleOrderString() != null) {
+			orderListParams.put("reason", AppConfig.getInstance()
+					.getCancleOrderString());
+		}
+		orderListParams.put("order_id", order_id);
+		((MainActivity) getActivity()).postdate(orderListParams,
+				Constants.getcancelorder, handler, TUREMESSAGEREMOVE,
+				ERRORMESSAGEREMOVE, false, true);
+	}
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -514,8 +532,6 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 				if (!saveUtils.getBoolSP(KeepingData.LOGINED)) {
 					order_login_btn.setVisibility(View.VISIBLE);
 					order_login_tips.setVisibility(View.VISIBLE);
-					iv_no_order.setVisibility(View.GONE);
-					order_xListView.setVisibility(View.GONE);
 				} else {
 					if (!XListViewTag) {
 						serving_btn_listener();
@@ -590,15 +606,13 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_order, container, false);
 		iv_no_order = (ImageView) view.findViewById(R.id.iv_no_order);
-		tv_order_fragment_tips = (TextView) view
-				.findViewById(R.id.tv_order_fragment_tips);
 		iv_loading = (ImageView) view.findViewById(R.id.iv_loading);
 		iv_no_net_wififail = (ImageView) view
 				.findViewById(R.id.iv_no_net_wififail);
 		animationDrawable = (AnimationDrawable) iv_no_order.getBackground();
 		order_xListView = (XListView) view.findViewById(R.id.order_xListView);
 		order_xListView.setPullLoadEnable(false);
-		order_xListView.HideFooter();
+		order_xListView.hintFooter();
 		order_xListView.setXListViewListener(this);
 
 		mHandler = new Handler();
@@ -610,7 +624,6 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 			if (isHasNet()) {
 				order_login_tips.setVisibility(View.VISIBLE);
 				order_login_btn.setVisibility(View.VISIBLE);
-				order_xListView.setVisibility(View.GONE);
 			}
 		}
 		order_login_btn.setOnClickListener(new OnClickListener() {
@@ -624,7 +637,19 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 		});
 		serving_btn = (RadioButton) view.findViewById(R.id.serving_btn);
 		completed_btn = (RadioButton) view.findViewById(R.id.completed_btn);
-		serving_btn_listener();
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				getActivity().runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						serving_btn_listener();
+					}
+				});
+			}
+		}, 500);
 		return view;
 	}
 
@@ -656,17 +681,14 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 		completed_btn.setChecked(false);
 		serving_btn.setChecked(true);
 		serving_btn.setBackgroundResource(R.drawable.left_selected);
-		serving_btn.setTextColor(getActivity().getResources().getColor(
-				R.color.dark_blue));
+		serving_btn.setTextColor(getResources().getColor(R.color.dark_blue));
 		completed_btn.setBackgroundResource(R.drawable.right_default);
-		completed_btn.setTextColor(getActivity().getResources().getColor(
-				R.color.white));
+		completed_btn.setTextColor(getResources().getColor(R.color.white));
 		if (isHasNet()) {
 			iv_no_order.setVisibility(View.GONE);
 			iv_loading.setVisibility(View.GONE);
 			iv_no_net_wififail.setVisibility(View.GONE);
-			order_xListView.setVisibility(View.GONE);
-			tv_order_fragment_tips.setVisibility(View.GONE);
+			order_xListView.setVisibility(View.VISIBLE);
 			if (orderAdapterServing != null) {
 				orderAdapterServing.notifyDataSetChanged();
 				orderAdapterServing = null;
@@ -689,17 +711,14 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 		serving_btn.setChecked(false);
 		completed_btn.setChecked(true);
 		serving_btn.setBackgroundResource(R.drawable.left_default);
-		serving_btn.setTextColor(getActivity().getResources().getColor(
-				R.color.white));
+		serving_btn.setTextColor(getResources().getColor(R.color.white));
 		completed_btn.setBackgroundResource(R.drawable.right_selected);
-		completed_btn.setTextColor(getActivity().getResources().getColor(
-				R.color.dark_blue));
+		completed_btn.setTextColor(getResources().getColor(R.color.dark_blue));
 		if (isHasNet()) {
 			iv_no_order.setVisibility(View.GONE);
 			iv_loading.setVisibility(View.GONE);
 			iv_no_net_wififail.setVisibility(View.GONE);
-			order_xListView.setVisibility(View.GONE);
-			tv_order_fragment_tips.setVisibility(View.GONE);
+			order_xListView.setVisibility(View.VISIBLE);
 			if (orderAdapterCompleted != null) {
 				orderAdapterCompleted.notifyDataSetChanged();
 				orderAdapterCompleted = null;
@@ -751,7 +770,7 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 			public void run() {
 				onRefreshNow();
 			}
-		}, 500);
+		}, 2000);
 
 	}
 
@@ -767,7 +786,7 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 			public void run() {
 				onLoadMoreNow();
 			}
-		}, 500);
+		}, 2000);
 
 	}
 
@@ -798,60 +817,49 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 	 * get order id from order item by event bus
 	 */
 	public void onEvent(OrderListAdapterEvent event) {
-		if (isAdded()) {
-			switch (event.getText()) {
-			case "RefeshServingOrderList":
-			case "ShanChuDingDan":
-			case "OrderSucess":
-				orderAdapterServing = null;
-				serving_btn_listener();
-				pageTagServing = 2;
-				AppConfig.getInstance().setCanCreateOrder(true);
-				break;
-			case "RefeshCompletedOrderList":
-			case "PingJiaSucess":
-				orderAdapterCompleted = null;
-				completed_btn_listener();
-				break;
-			case "ZhiFuBaoPaySucess":
-			case "XianJinPaySucess":
-				((MainActivity) getActivity()).showdialog("支付成功！");
-				new Handler().postDelayed(new Runnable() {
-					public void run() {
-						orderAdapterServing = null;
-						serving_btn_listener();
-						pageTagServing = 2;
-					}
-				}, 50);
-				break;
-			case "YuEPaySucess":
-			case "ExtraIcardPaySucess":
-			case "WXPaySucess":
-				((MainActivity) getActivity()).showdialog("支付成功！");
-				orderAdapterServing = null;
-				serving_btn_listener();
-				pageTagServing = 2;
-				break;
-			case "NoNetQuXiaoDingDan":
-				noNetDo();
-				break;
-			case "WxHuiDiaoSucess":
-				getOrderIsShare();
-			case "TopServingOrderList":
-				if ((XListViewTag == true) && servingOrderList.size() > 2
-						&& isShowPage) {
-					order_xListView.post(new Runnable() {
-						@Override
-						public void run() {
-							order_xListView.smoothScrollToPosition(0);
-							order_xListView.setSelection(0);
-						}
-					});
+		switch (event.getText()) {
+		case "RefeshServingOrderList":
+		case "ShanChuDingDan":
+		case "OrderSucess":
+			orderAdapterServing = null;
+			serving_btn_listener();
+			pageTagServing = 2;
+			break;
+		case "RefeshCompletedOrderList":
+		case "PingJiaSucess":
+			orderAdapterCompleted = null;
+			completed_btn_listener();
+			break;
+		case "ZhiFuBaoPaySucess":
+		case "XianJinPaySucess":
+		case "Payinterrupt":
+			System.out.println("订单状态刷新");
+			new Handler().postDelayed(new Runnable() {
+				public void run() {
+					orderAdapterServing = null;
+					serving_btn_listener();
+					pageTagServing = 2;
 				}
-				break;
-			default:
-				break;
+			}, 1000);
+			break;
+		case "YuEPaySucess":
+		case "WXPaySucess":
+			((MainActivity) getActivity()).showdialog("支付成功！");
+			orderAdapterServing = null;
+			serving_btn_listener();
+			pageTagServing = 2;
+			break;
+		case "NoNetQuXiaoDingDan":
+			noNetDo();
+			break;
+		case "WxHuiDiaoSucess":
+			getOrderIsShare();
+			break;
+		default:
+			if (event.getText().matches("[0-9]*")) {
+				removeOrder(event.getText());
 			}
+			break;
 		}
 	}
 
@@ -887,5 +895,6 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 		((MainActivity) getActivity()).postdate(sharearm,
 				Constants.getorderisshare, mHandler, GETISORDERSHARESUCESS,
 				GETISORDERSHAREFAIL, true, false);
+
 	}
 }

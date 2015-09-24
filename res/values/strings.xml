@@ -139,8 +139,5 @@
     <string name="tijiao">提交</string>
     <string name="quxiao">取消</string>
     <string name="bangding">绑定</string>
-    <string name="wuliuxinxi">物流信息</string>
-    <string name="cuidan">催单</string>
-    <string name="pingjiazhuanyue">评价赚余额</string>
 
 </resources>

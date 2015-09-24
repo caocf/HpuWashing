@@ -4,28 +4,31 @@
  */
 package com.edaixi.adapter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+
 import android.annotation.SuppressLint;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.edaixi.activity.AppraiseActivity;
 import com.edaixi.activity.PayActivityBak;
 import com.edaixi.activity.R;
 import com.edaixi.modle.OrderListItemBean;
+import com.edaixi.util.OrderListAdapterEvent;
+import com.edaixi.view.CancleOrderDialog;
 import com.tendcloud.tenddata.TCAgent;
+
+import de.greenrobot.event.EventBus;
 
 public class OrderListAdapter extends BaseAdapter {
 
@@ -70,401 +73,349 @@ public class OrderListAdapter extends BaseAdapter {
 		} else {
 			view = View.inflate(context, R.layout.order_list_item, null);
 			viHolder = new ViewHolder();
-			viHolder.order_category_logo = (ImageView) view
-					.findViewById(R.id.order_category_logo);
-			viHolder.order_category_text = (TextView) view
-					.findViewById(R.id.order_category_text);
-			viHolder.iv_order_status = (ImageView) view
-					.findViewById(R.id.iv_order_status);
-			viHolder.tv_order_status = (TextView) view
-					.findViewById(R.id.tv_order_status);
-			viHolder.tv_order_sn = (TextView) view
-					.findViewById(R.id.tv_order_sn);
-			viHolder.tv_order_time = (TextView) view
-					.findViewById(R.id.tv_order_time);
-			viHolder.tv_order_price = (TextView) view
-					.findViewById(R.id.tv_order_price);
-			viHolder.tv_order_pay = (TextView) view
-					.findViewById(R.id.tv_order_pay);
-			viHolder.tv_order_comment_tips = (TextView) view
-					.findViewById(R.id.tv_order_comment_tips);
-			viHolder.rl_order_item_bottom = (RelativeLayout) view
-					.findViewById(R.id.rl_order_item_bottom);
+			viHolder.order_id = (TextView) view.findViewById(R.id.order_id);
+			viHolder.fl_circle = (FrameLayout) view
+					.findViewById(R.id.fl_circle);
+			viHolder.tv_order_statue_circle = (TextView) view
+					.findViewById(R.id.tv_order_statue_circle);
+			viHolder.order_time_text = (TextView) view
+					.findViewById(R.id.order_time_text);
+			viHolder.order_item_tipname = (TextView) view
+					.findViewById(R.id.order_item_tipname);
+			viHolder.iv_order_statue_circle = (ImageView) view
+					.findViewById(R.id.iv_order_statue_circle);
+			viHolder.order_item_next_1 = (ImageView) view
+					.findViewById(R.id.order_item_next_1);
+			viHolder.order_item_next_2 = (ImageView) view
+					.findViewById(R.id.order_item_next_2);
+			viHolder.order_item_next_3 = (ImageView) view
+					.findViewById(R.id.order_item_next_3);
+			viHolder.iv_dotted_line = (ImageView) view
+					.findViewById(R.id.iv_dotted_line);
+			viHolder.order_pay_value = (TextView) view
+					.findViewById(R.id.order_pay_value);
+			viHolder.remove_order_btn = (TextView) view
+					.findViewById(R.id.remove_order_btn);
+			viHolder.comment_order_btn = (TextView) view
+					.findViewById(R.id.comment_order_btn);
+			viHolder.immediately_pay_btn = (TextView) view
+					.findViewById(R.id.immediately_pay_btn);
+			viHolder.ll_comment = (LinearLayout) view
+					.findViewById(R.id.ll_comment);
+			viHolder.ll_serving_order = (LinearLayout) view
+					.findViewById(R.id.ll_serving_order);
+			viHolder.order_item_tipcolor = (View) view
+					.findViewById(R.id.order_item_tipcolor);
+			if (flag.equals("COMPLETEDORDER")) {
+				viHolder.ll_serving_order.setVisibility(View.GONE);
+				viHolder.fl_circle.setVisibility(View.GONE);
+				viHolder.iv_order_statue_circle.setVisibility(View.INVISIBLE);
+				viHolder.tv_order_statue_circle.setVisibility(View.GONE);
+				viHolder.ll_comment.setVisibility(View.VISIBLE);
+				viHolder.comment_order_btn.setVisibility(View.VISIBLE);
+				viHolder.order_item_next_1.setVisibility(View.INVISIBLE);
+				viHolder.order_item_next_2.setVisibility(View.VISIBLE);
+				viHolder.order_item_next_3.setVisibility(View.INVISIBLE);
+				viHolder.remove_order_btn.setVisibility(View.INVISIBLE);
+			}
 			view.setTag(viHolder);
 		}
-		viHolder.tv_order_comment_tips.setVisibility(View.INVISIBLE);
-		if (flag.equals("COMPLETEDORDER")) {
-			// 已完成订单处理逻辑
-			viHolder.iv_order_status.setVisibility(View.INVISIBLE);
-			viHolder.tv_order_price.setText("订单总额：  "
-					+ orderItem.getOrder_price() + "元");
-			viHolder.tv_order_pay
-					.setBackgroundResource(R.drawable.order_commeted_bg);
-			viHolder.tv_order_pay.setTextColor(context.getResources().getColor(
-					R.color.yijingpingjiaziti));
-			if (orderItem.getCan_be_commented().equals("1")) {
-				viHolder.tv_order_pay.setText("已评价");
-				viHolder.tv_order_pay.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						TCAgent.onEvent(context, "点击订单评价");
-						Intent intent = new Intent();
-						intent.setClass(context, AppraiseActivity.class);
-						Bundle bundle = new Bundle();
-						bundle.putSerializable("orderItem", orderItem);
-						intent.putExtras(bundle);
-						context.startActivity(intent);
-					}
-				});
+		if (orderItem.getCan_be_canceled() != null) {
+			if (!orderItem.getCan_be_canceled().equals("true")) {
+				viHolder.remove_order_btn.setVisibility(View.GONE);
 			} else {
-				viHolder.tv_order_pay.setText("已过期");
-				viHolder.tv_order_pay.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-					}
-				});
-			}
-		} else {
-			if (orderItem.getDelivery_status() != null) {
-				viHolder.tv_order_status.setText(orderItem
-						.getDelivery_status_text().trim());
-				switch (orderItem.getDelivery_status()) {
-				case "11":
-				case "0":
-					viHolder.iv_order_status.setVisibility(View.VISIBLE);
-					viHolder.iv_order_status
-							.setImageResource(R.drawable.order_status_1);
-					viHolder.rl_order_item_bottom.setVisibility(View.GONE);
-					viHolder.tv_order_price.setVisibility(View.GONE);
-					viHolder.tv_order_pay.setVisibility(View.GONE);
-					break;
-				case "9":
-					viHolder.iv_order_status.setVisibility(View.VISIBLE);
-					viHolder.iv_order_status
-							.setImageResource(R.drawable.order_status_2);
-					viHolder.rl_order_item_bottom.setVisibility(View.VISIBLE);
-					if (orderItem.getCan_be_paid().equals("true")) {
-						viHolder.tv_order_price.setVisibility(View.VISIBLE);
-						viHolder.tv_order_pay.setVisibility(View.VISIBLE);
-						viHolder.tv_order_price.setText("订单总额：  "
-								+ orderItem.getOrder_price() + "元");
-						viHolder.tv_order_pay
-								.setBackgroundResource(R.drawable.order_pay_bg);
-						viHolder.tv_order_pay.setTextColor(context
-								.getResources().getColor(R.color.fukuanziti));
-						viHolder.tv_order_pay.setText("付款");
-						viHolder.tv_order_pay
-								.setOnClickListener(new OnClickListener() {
+				viHolder.remove_order_btn.setVisibility(View.VISIBLE);
+				viHolder.remove_order_btn
+						.setBackgroundResource(R.drawable.order_white_btn_bg);
+				viHolder.remove_order_btn.setText("取消订单");
+				viHolder.remove_order_btn.setTextColor(Color.GRAY);
+				viHolder.remove_order_btn
+						.setOnClickListener(new OnClickListener() {
 
-									@Override
-									public void onClick(View v) {
-										Intent intent = new Intent();
-										intent.setClass(context,
-												PayActivityBak.class);
-										Bundle bundle = new Bundle();
-										bundle.putSerializable("PayOrderItem",
-												orderItem);
-										intent.putExtras(bundle);
-										context.startActivity(intent);
-									}
-								});
-					} else if (!orderItem.getOrder_price().equals("0.00")) {
-						viHolder.tv_order_price.setVisibility(View.VISIBLE);
-						viHolder.tv_order_pay.setVisibility(View.VISIBLE);
-						viHolder.tv_order_price.setText("实付款：     "
-								+ orderItem.getYingfu() + "元");
-						viHolder.tv_order_pay
-								.setBackgroundResource(R.drawable.order_cuidan_bg);
-						viHolder.tv_order_pay.setText("催单");
-						viHolder.tv_order_pay.setTextColor(context
-								.getResources().getColor(R.color.cuidanziti));
-						viHolder.tv_order_pay
-								.setOnClickListener(new OnClickListener() {
-
-									@Override
-									public void onClick(View v) {
-										// 拨打取件员电话
-										try {
-											if (orderItem.getCourier_phone_qu()
-													.length() > 1) {
-												Uri uriQu = Uri.parse("tel:"
-														+ orderItem
-																.getCourier_phone_qu());
-												Intent intentQu = new Intent(
-														Intent.ACTION_DIAL,
-														uriQu);
-												context.startActivity(intentQu);
-											}
-										} catch (ActivityNotFoundException exception) {
-											return;
-										}
-									}
-								});
-					} else {
-						viHolder.tv_order_price.setVisibility(View.VISIBLE);
-						viHolder.tv_order_pay.setVisibility(View.VISIBLE);
-						viHolder.tv_order_price.setText("等待上门计价付款");
-						viHolder.tv_order_pay.setText("催单");
-						viHolder.tv_order_pay
-								.setBackgroundResource(R.drawable.order_cuidan_bg);
-						viHolder.tv_order_pay.setTextColor(context
-								.getResources().getColor(R.color.cuidanziti));
-						viHolder.tv_order_pay
-								.setOnClickListener(new OnClickListener() {
-
-									@Override
-									public void onClick(View v) {
-										// 拨打取件员电话
-										try {
-											if (orderItem.getCourier_phone_qu()
-													.length() > 1) {
-												Uri uriQu = Uri.parse("tel:"
-														+ orderItem
-																.getCourier_phone_qu());
-												Intent intentQu = new Intent(
-														Intent.ACTION_DIAL,
-														uriQu);
-												context.startActivity(intentQu);
-											}
-										} catch (ActivityNotFoundException exception) {
-											return;
-										}
-									}
-								});
-					}
-					break;
-				case "1":
-				case "4":
-				case "5":
-				case "6":
-				case "8":
-					viHolder.iv_order_status.setVisibility(View.VISIBLE);
-					viHolder.iv_order_status
-							.setImageResource(R.drawable.order_status_3);
-					viHolder.rl_order_item_bottom.setVisibility(View.VISIBLE);
-					viHolder.tv_order_price.setVisibility(View.VISIBLE);
-					viHolder.tv_order_price.setText("实付款：     "
-							+ orderItem.getYingfu() + "元");
-					viHolder.tv_order_pay.setVisibility(View.VISIBLE);
-					viHolder.tv_order_pay.setText("催单");
-					viHolder.tv_order_pay.setTextColor(context.getResources()
-							.getColor(R.color.cuidanziti));
-					viHolder.tv_order_pay
-							.setBackgroundResource(R.drawable.order_cuidan_bg);
-					viHolder.tv_order_pay
-							.setOnClickListener(new OnClickListener() {
-
-								@Override
-								public void onClick(View v) {
-									// 拨打客服电话
-									try {
-										Uri uri = Uri.parse("tel:4008187171");
-										Intent intent = new Intent(
-												Intent.ACTION_DIAL, uri);
-										context.startActivity(intent);
-									} catch (ActivityNotFoundException exception) {
-										return;
-									}
+							@Override
+							public void onClick(View v) {
+								TCAgent.onEvent(context, "取消订单");
+								if (isHasNet()) {
+									CancleOrderDialog cuDialog = new CancleOrderDialog(
+											context,
+											R.style.customdialog_style,
+											R.layout.cancle_order_dialog,
+											orderItem);
+									cuDialog.show();
+								} else {
+									EventBus.getDefault().post(
+											new OrderListAdapterEvent(
+													"NoNetQuXiaoDingDan"));
 								}
-							});
-					break;
-				case "15":
-					viHolder.iv_order_status.setVisibility(View.VISIBLE);
-					viHolder.iv_order_status
-							.setImageResource(R.drawable.order_status_4);
-					viHolder.rl_order_item_bottom.setVisibility(View.VISIBLE);
-					viHolder.tv_order_price.setVisibility(View.VISIBLE);
-					viHolder.tv_order_price.setText("实付款：     "
-							+ orderItem.getYingfu() + "元");
-					viHolder.tv_order_pay.setVisibility(View.VISIBLE);
-					viHolder.tv_order_pay.setText("催单");
-					viHolder.tv_order_pay
-							.setBackgroundResource(R.drawable.order_cuidan_bg);
-					viHolder.tv_order_pay.setTextColor(context.getResources()
-							.getColor(R.color.cuidanziti));
-					viHolder.tv_order_pay
-							.setOnClickListener(new OnClickListener() {
-
-								@Override
-								public void onClick(View v) {
-									// 拨打客服电话
-									try {
-										Uri uri = Uri.parse("tel:4008187171");
-										Intent intent = new Intent(
-												Intent.ACTION_DIAL, uri);
-										context.startActivity(intent);
-									} catch (ActivityNotFoundException exception) {
-										return;
-									}
-								}
-							});
-					break;
-				case "2":
-				case "7":
-					viHolder.iv_order_status.setVisibility(View.VISIBLE);
-					viHolder.tv_order_price.setVisibility(View.VISIBLE);
-					viHolder.iv_order_status
-							.setImageResource(R.drawable.order_status_4);
-					viHolder.rl_order_item_bottom.setVisibility(View.VISIBLE);
-					viHolder.tv_order_price.setText("实付款：     "
-							+ orderItem.getYingfu() + "元");
-					viHolder.tv_order_pay.setVisibility(View.VISIBLE);
-					viHolder.tv_order_pay.setText("催单");
-					viHolder.tv_order_pay
-							.setBackgroundResource(R.drawable.order_cuidan_bg);
-					viHolder.tv_order_pay.setTextColor(context.getResources()
-							.getColor(R.color.cuidanziti));
-					viHolder.tv_order_pay
-							.setOnClickListener(new OnClickListener() {
-
-								@Override
-								public void onClick(View v) {
-									// 拨打送件员电话
-									if (orderItem.getCourier_phone_song()
-											.length() > 1) {
-										try {
-											Uri uriSong = Uri.parse("tel:"
-													+ orderItem
-															.getCourier_phone_song());
-											Intent intentSong = new Intent(
-													Intent.ACTION_DIAL, uriSong);
-											context.startActivity(intentSong);
-										} catch (ActivityNotFoundException exception) {
-											return;
-										}
-									}
-								}
-							});
-					break;
-				case "3":
-					viHolder.tv_order_price.setVisibility(View.VISIBLE);
-					viHolder.tv_order_pay.setVisibility(View.VISIBLE);
-					viHolder.iv_order_status.setVisibility(View.INVISIBLE);
-					viHolder.rl_order_item_bottom.setVisibility(View.VISIBLE);
-					viHolder.tv_order_price.setText("实付款：     "
-							+ orderItem.getYingfu() + "元");
-					if (orderItem.getCan_be_commented().equals("0")) {
-						viHolder.tv_order_comment_tips
-								.setVisibility(View.VISIBLE);
-						viHolder.tv_order_pay
-								.setBackgroundResource(R.drawable.order_cuidan_bg);
-						viHolder.tv_order_pay.setTextColor(context
-								.getResources().getColor(R.color.pingjiaziti));
-						viHolder.tv_order_pay.setText("评价");
-						viHolder.tv_order_pay
-								.setOnClickListener(new OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										TCAgent.onEvent(context, "点击订单评价");
-										Intent intent = new Intent();
-										intent.setClass(context,
-												AppraiseActivity.class);
-										Bundle bundle = new Bundle();
-										bundle.putSerializable("orderItem",
-												orderItem);
-										intent.putExtras(bundle);
-										context.startActivity(intent);
-									}
-								});
-					}
-					break;
-				case "-1":
-				case "-2":
-					viHolder.iv_order_status.setVisibility(View.INVISIBLE);
-					viHolder.rl_order_item_bottom.setVisibility(View.GONE);
-					break;
-				default:
-					break;
-				}
+							}
+						});
 			}
 		}
-		if (orderItem.getCategory_id() != null) {
-			viHolder.order_category_text.setText(orderItem.getGood());
-			switch (orderItem.getCategory_id()) {
-			case "1":
-				// 洗衣类别——洗衣服
-				viHolder.order_category_logo
-						.setImageResource(R.drawable.washing_clothes);
-				break;
-			case "2":
-				// 洗衣类别——洗鞋
-				viHolder.order_category_logo
-						.setImageResource(R.drawable.washing_shose);
-				break;
+
+		if (!orderItem.getCan_be_paid().equals("true")) {
+			viHolder.immediately_pay_btn
+					.setBackgroundResource(R.drawable.order_white_btn_bg);
+			viHolder.immediately_pay_btn
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+						}
+					});
+			if (orderItem.getPay_status().equals("1")) {
+				viHolder.immediately_pay_btn.setVisibility(View.GONE);
+				viHolder.iv_dotted_line.setVisibility(View.GONE);
+			} else {
+				viHolder.iv_dotted_line.setVisibility(View.VISIBLE);
+				viHolder.immediately_pay_btn.setVisibility(View.VISIBLE);
+				viHolder.immediately_pay_btn.setTextColor(R.color.gray);
+				viHolder.immediately_pay_btn.setText("暂时不能付款");
+			}
+
+		} else {
+			/***
+			 * click to pay page
+			 */
+			viHolder.immediately_pay_btn.setVisibility(View.VISIBLE);
+			viHolder.immediately_pay_btn
+					.setBackgroundResource(R.drawable.order_yellow_btn_bg);
+			viHolder.immediately_pay_btn.setText("立即支付");
+			viHolder.immediately_pay_btn.setTextColor(Color.WHITE);
+			viHolder.immediately_pay_btn
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent();
+							intent.setClass(context, PayActivityBak.class);
+							Bundle bundle = new Bundle();
+							bundle.putSerializable("order_id",
+									orderItem.getOrder_id());
+							bundle.putSerializable("order_sn",
+									orderItem.getOrder_sn());
+							bundle.putSerializable("order_price",
+									orderItem.getOrder_price());
+							bundle.putSerializable("coupon_sn",
+									orderItem.getCoupon_sn());
+							bundle.putSerializable("coupon_paid",
+									orderItem.getCoupon_paid());
+							bundle.putSerializable("exclusive_channels",
+									orderItem.getExclusive_channels());
+							intent.putExtras(bundle);
+							context.startActivity(intent);
+						}
+					});
+
+		}
+
+		if (orderItem.getCan_be_commented() != null) {
+			if (flag.equals("COMPLETEDORDER")) {
+				viHolder.iv_dotted_line.setVisibility(View.VISIBLE);
+			}
+			if (orderItem.getCan_be_commented().equals("1")) {
+				viHolder.comment_order_btn.setClickable(false);
+				viHolder.comment_order_btn.setTextColor(Color.GRAY);
+				viHolder.comment_order_btn
+						.setBackgroundResource(R.drawable.order_white_btn_bg);
+				viHolder.comment_order_btn.setText("   已评价");
+				viHolder.comment_order_btn
+						.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								TCAgent.onEvent(context, "点击订单评价");
+								Intent intent = new Intent();
+								intent.setClass(context, AppraiseActivity.class);
+								Bundle bundle = new Bundle();
+								bundle.putSerializable("orderItem", orderItem);
+								intent.putExtras(bundle);
+								context.startActivity(intent);
+
+							}
+						});
+			} else if (orderItem.getCan_be_commented().equals("2")) {
+				viHolder.comment_order_btn.setClickable(false);
+				viHolder.comment_order_btn.setTextColor(Color.GRAY);
+				viHolder.comment_order_btn
+						.setBackgroundResource(R.drawable.order_white_btn_bg);
+				viHolder.comment_order_btn.setText("   已过期");
+				viHolder.comment_order_btn
+						.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+							}
+						});
+			} else {
+				viHolder.comment_order_btn.setTextColor(Color.WHITE);
+				viHolder.comment_order_btn.setText("   评价");
+				viHolder.comment_order_btn
+						.setBackgroundResource(R.drawable.order_yellow_btn_bg);
+				viHolder.comment_order_btn
+						.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								TCAgent.onEvent(context, "点击订单评价");
+								Intent intent = new Intent();
+								intent.setClass(context, AppraiseActivity.class);
+								Bundle bundle = new Bundle();
+								bundle.putSerializable("orderItem", orderItem);
+								intent.putExtras(bundle);
+								context.startActivity(intent);
+							}
+						});
+			}
+		}
+
+		if (orderItem.getDelivery_status() != null) {
+			switch (orderItem.getDelivery_status()) {
+			case "10":
 			case "3":
-				// 洗衣类别——窗帘
-				viHolder.order_category_logo
-						.setImageResource(R.drawable.washing_window);
+				viHolder.iv_order_statue_circle.setVisibility(View.INVISIBLE);
+				viHolder.tv_order_statue_circle.setVisibility(View.GONE);
 				break;
+			case "8":
+			case "1":
 			case "4":
-				// 洗衣类别——奢侈品衣物
-				viHolder.order_category_logo
-						.setImageResource(R.drawable.washing_luxury);
-				break;
 			case "5":
-				// 洗衣类别——奢侈品皮具
-				viHolder.order_category_logo
-						.setImageResource(R.drawable.washing_leather);
+			case "6":
+				viHolder.iv_order_statue_circle.setVisibility(View.VISIBLE);
+				viHolder.tv_order_statue_circle.setVisibility(View.VISIBLE);
+				viHolder.tv_order_statue_circle.setTextColor(context
+						.getResources().getColor(R.color.green));
+				viHolder.iv_order_statue_circle
+						.setImageResource(R.drawable.order_statue_circle_2);
+				viHolder.tv_order_statue_circle.setText(" "
+						+ orderItem.getDelivery_status_text().trim()
+								.substring(0, 2)
+						+ " "
+						+ "\n"
+						+ orderItem.getDelivery_status_text().trim()
+								.substring(2, 5));
+				break;
+			case "-1":
+			case "9":
+				viHolder.iv_order_statue_circle.setVisibility(View.VISIBLE);
+				viHolder.tv_order_statue_circle.setVisibility(View.VISIBLE);
+				viHolder.tv_order_statue_circle.setTextColor(context
+						.getResources().getColor(R.color.green));
+				viHolder.iv_order_statue_circle
+						.setImageResource(R.drawable.order_statue_circle_1);
+				viHolder.tv_order_statue_circle.setText(" "
+						+ orderItem.getDelivery_status_text().trim()
+								.substring(0, 2)
+						+ " "
+						+ "\n"
+						+ orderItem.getDelivery_status_text().trim()
+								.substring(2, 5));
+				break;
+			case "0":
+				viHolder.iv_order_statue_circle.setVisibility(View.VISIBLE);
+				viHolder.tv_order_statue_circle.setVisibility(View.VISIBLE);
+				viHolder.tv_order_statue_circle.setTextColor(context
+						.getResources().getColor(R.color.green));
+				viHolder.iv_order_statue_circle
+						.setImageResource(R.drawable.order_statue_circle_0);
+				viHolder.tv_order_statue_circle.setText(orderItem
+						.getDelivery_status_text().trim());
+				break;
+			case "11":
+				viHolder.iv_order_statue_circle.setVisibility(View.VISIBLE);
+				viHolder.tv_order_statue_circle.setVisibility(View.VISIBLE);
+				viHolder.tv_order_statue_circle.setTextColor(context
+						.getResources().getColor(R.color.green));
+				viHolder.iv_order_statue_circle
+						.setImageResource(R.drawable.order_statue_circle_0);
+				viHolder.tv_order_statue_circle.setText(orderItem
+						.getDelivery_status_text().trim());
+				break;
+			case "-2":
+			case "2":
+			case "7":
+			case "15":
+				viHolder.iv_order_statue_circle.setVisibility(View.VISIBLE);
+				viHolder.tv_order_statue_circle.setVisibility(View.VISIBLE);
+				viHolder.tv_order_statue_circle.setTextColor(context
+						.getResources().getColor(R.color.green));
+				viHolder.iv_order_statue_circle
+						.setImageResource(R.drawable.order_statue_circle_3);
+				viHolder.tv_order_statue_circle.setText(" "
+						+ orderItem.getDelivery_status_text().trim()
+								.substring(0, 2)
+						+ " "
+						+ "\n"
+						+ orderItem.getDelivery_status_text().trim()
+								.substring(2, 5));
 				break;
 			default:
-				viHolder.order_category_logo
-						.setImageResource(R.drawable.washing_clothes);
 				break;
 			}
 		}
-		String orderSn = orderItem.getOrder_sn();
-		StringBuilder sBuilder = new StringBuilder(orderSn);
-		viHolder.tv_order_sn.setText("订单编号： "
-				+ sBuilder.insert(orderSn.length() - 6, "  "));
-		if (getServingDate(orderItem.getYuyue_qujian_time()) != null) {
-			viHolder.tv_order_time.setText("取件时间： "
-					+ getServingDate(orderItem.getYuyue_qujian_time()));
+		viHolder.order_id.setText(orderItem.getOrder_sn());
+		viHolder.order_pay_value.setText(orderItem.getOrder_price() + "元");
+		viHolder.order_time_text.setText(getServingDate(orderItem
+				.getYuyue_qujian_time()));
+		if (orderItem.getCategory_id() != null) {
+			switch (orderItem.getCategory_id()) {
+			case "1":
+				viHolder.order_item_tipcolor.setBackgroundColor(context
+						.getResources().getColor(R.color.order_xiyi));
+				viHolder.order_item_tipname.setTextColor(context.getResources()
+						.getColor(R.color.order_xiyi));
+				viHolder.order_item_tipname.setText(orderItem.getGood());
+				break;
+			case "2":
+				viHolder.order_item_tipcolor.setBackgroundColor(context
+						.getResources().getColor(R.color.order_xixie));
+				viHolder.order_item_tipname.setTextColor(context.getResources()
+						.getColor(R.color.order_xixie));
+				viHolder.order_item_tipname.setText(orderItem.getGood());
+				break;
+			case "3":
+				viHolder.order_item_tipcolor.setBackgroundColor(context
+						.getResources().getColor(R.color.order_jiafang));
+				viHolder.order_item_tipname.setTextColor(context.getResources()
+						.getColor(R.color.order_jiafang));
+				viHolder.order_item_tipname.setText(orderItem.getGood());
+				break;
+			default:
+				viHolder.order_item_tipcolor.setBackgroundColor(context
+						.getResources().getColor(R.color.order_xiyi));
+				viHolder.order_item_tipname.setTextColor(context.getResources()
+						.getColor(R.color.order_xiyi));
+				viHolder.order_item_tipname.setText(orderItem.getGood());
+				break;
+			}
 		}
 		return view;
 	}
 
 	public static class ViewHolder {
-		private ImageView order_category_logo;
-		private TextView order_category_text;
-		private ImageView iv_order_status;
-		private TextView tv_order_status;
-		private TextView tv_order_sn;
-		private TextView tv_order_time;
-		private TextView tv_order_price;
-		private TextView tv_order_pay;
-		private TextView tv_order_comment_tips;
-		private RelativeLayout rl_order_item_bottom;
+		public TextView order_id;
+		public TextView order_pay_value;
+		public TextView remove_order_btn;
+		public TextView immediately_pay_btn;
+		public TextView comment_order_btn;
+		public TextView tv_order_statue_circle;
+		public TextView order_time_text;
+		public TextView order_item_tipname;
+		private View order_item_tipcolor;
+		public ImageView iv_order_statue_circle;
+		public ImageView order_item_next_1;
+		public ImageView order_item_next_2;
+		public ImageView order_item_next_3;
+		public ImageView iv_dotted_line;
+		public LinearLayout ll_comment;
+		public FrameLayout fl_circle;
+		public LinearLayout ll_serving_order;
 	}
 
-	public static String getServingDate(String dateString) {
-		if (dateString.length() > 10) {
-			StringBuilder sBuffer = new StringBuilder(dateString.substring(0,
-					10));
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-			Calendar cal = Calendar.getInstance();
-			if (df.format(cal.getTime()).equals(dateString.subSequence(0, 10))) {
-				sBuffer = sBuffer.insert(10, "(今天)  ");
-			}
-			cal.roll(Calendar.DAY_OF_YEAR, 1);
-			if (df.format(cal.getTime()).equals(dateString.subSequence(0, 10))) {
-				sBuffer = sBuffer.insert(10, "(明天)  ");
-			}
-			cal.roll(Calendar.DAY_OF_YEAR, 1);
-			if (df.format(cal.getTime()).equals(dateString.subSequence(0, 10))) {
-				sBuffer = sBuffer.insert(10, "(后天)  ");
-			}
-			if (!sBuffer.toString().contains("(")) {
-				sBuffer = sBuffer.insert(10, "  ");
-			}
-			String replace = sBuffer.toString().replace("-", ".");
-			replace = replace
-					+ (dateString.subSequence(10, dateString.length())
-							.toString().replace(" ", ""));
-			return replace;
-		} else {
-			return null;
-		}
+	public static StringBuffer getServingDate(String dateString) {
+		StringBuffer sBuffer = new StringBuffer();
+		sBuffer.append(dateString.substring(5, 7).trim());
+		sBuffer.append("月");
+		sBuffer.append(dateString.substring(8, 10).trim());
+		sBuffer.append("日 ");
+		sBuffer.append(dateString.substring(10).trim());
+		return sBuffer;
 	}
 
 	/***

@@ -26,7 +26,9 @@ import com.edaixi.modle.OrderListItemBean;
 import com.edaixi.util.Constants;
 import com.edaixi.util.LogUtil;
 import com.edaixi.util.MyhttpUtils;
+import com.edaixi.util.OrderListAdapterEvent;
 import com.edaixi.util.SaveUtils;
+import de.greenrobot.event.EventBus;
 
 /**
  * custom dialog ,when you need,below demo is your want
@@ -50,28 +52,6 @@ public class CancleOrderDialog extends Dialog implements OnClickListener {
 	boolean[] is_select_cancle = null;
 	private MyhttpUtils myhttpUtils;
 	private SaveUtils saveUtils;
-
-	/**
-	 * 自定义取消订单Dialog监听器
-	 */
-	public interface CancleDialogButtonListener {
-		/**
-		 * 回调函数，用于在Dialog的监听事件触发后刷新Activity的UI显示
-		 */
-		public void isCancleOrder(boolean isCancle);
-	}
-
-	private CancleDialogButtonListener btnListener;
-
-	/**
-	 * 带监听器参数的构造函数
-	 */
-
-	// 设置回调接口(监听器)的方法
-	public void setYourListener(CancleDialogButtonListener btnListener) {
-		this.btnListener = btnListener;
-	}
-
 	private Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
@@ -92,8 +72,6 @@ public class CancleOrderDialog extends Dialog implements OnClickListener {
 					}
 					final CancleListAdapter cAdapter = new CancleListAdapter();
 					lv_show_cancle_item.setAdapter(cAdapter);
-					AppConfig.getInstance().setCancleOrderString(
-							tipItemStrings[0]);
 					lv_show_cancle_item
 							.setOnItemClickListener(new OnItemClickListener() {
 
@@ -163,9 +141,9 @@ public class CancleOrderDialog extends Dialog implements OnClickListener {
 		} else {
 			parm.put("city_id", "1");
 		}
-		String url = myhttpUtils.getUrl(parm, Constants.getcancelorderreasons,
-				context);
-		myhttpUtils.getdate(context, handler, 10, 11, parm, url, false, true);
+		String url = myhttpUtils.getUrl(parm, Constants.getcancelorderreasons,context);
+		myhttpUtils.getdate(context, handler, 10, 11, parm,
+				url, false, true);
 	}
 
 	@Override
@@ -194,15 +172,15 @@ public class CancleOrderDialog extends Dialog implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.tv_btn_confim:
 			if ((orderItem != null) && (orderItem.getOrder_id() != null)) {
-				btnListener.isCancleOrder(true);
-			}
-			if (isShowing()) {
+				EventBus.getDefault().post(
+						new OrderListAdapterEvent(orderItem.getOrder_id()));
+			}if(isShowing()){
 				dismiss();
 			}
+			
 			break;
 		case R.id.tv_btn_cancle:
-			btnListener.isCancleOrder(false);
-			if (isShowing()) {
+			if(isShowing()){
 				dismiss();
 			}
 			break;

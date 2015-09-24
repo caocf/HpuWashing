@@ -6,15 +6,12 @@ public class CityItem implements ContactItemInterface {
 	private String nickName;
 	private String fullName;
 	private String cityId;
-	private boolean isSelect;
 
-	public CityItem(String nickName, String fullName, String cityId,
-			boolean isSelect) {
+	public CityItem(String nickName, String fullName, String cityId) {
 		super();
 		this.nickName = nickName;
 		this.cityId = cityId;
 		this.setFullName(fullName);
-		this.isSelect = isSelect;
 	}
 
 	@Override
@@ -56,16 +53,4 @@ public class CityItem implements ContactItemInterface {
 		this.fullName = fullName;
 	}
 
-	public boolean isSelect() {
-		return isSelect;
-	}
-
-	public void setSelect(boolean isSelect) {
-		this.isSelect = isSelect;
-	}
-
-	@Override
-	public boolean getCitySelectInfo() {
-		return isSelect;
-	}
 }

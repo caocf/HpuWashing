@@ -14,17 +14,17 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.geocoder.GeocodeAddress;
 import com.amap.api.services.geocoder.GeocodeQuery;
@@ -109,7 +109,6 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case CREATADSSUCCED:
-				LogUtil.e("创建地址--------------成功返回"+msg.obj);
 				HttpCommonBean jsonCommonBean = gson.fromJson(
 						(String) msg.obj.toString(), HttpCommonBean.class);
 				if (jsonCommonBean.isRet()) {
@@ -144,7 +143,6 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 
 				break;
 			case CREATADSFAILD:
-				LogUtil.e("创建地址--------------失败返回"+msg.obj);
 				showdialog("地址创建失败");
 				break;
 			case GETADSSUCCED:
@@ -178,6 +176,7 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 				break;
 			case GETCITYSUCESS:
 				String cityResultSucess = (String) msg.obj;
+				LogUtil.e("获取开通城市区域-" + cityResultSucess);
 				String data;
 				try {
 					data = new JSONObject(cityResultSucess).getString("data");
@@ -190,7 +189,7 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 				}
 				break;
 			case GETCITYFAIL:
-				showdialog("获取开通城市失败");
+				// showdialog("获取开通城市失败");
 				break;
 			case VERIFYCITYSUCESS:
 				try {
@@ -281,6 +280,23 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 		parm = new HashMap<String, String>();
 		getCityArea();
 		reciever = (com.edaixi.view.CleanEditText) findViewById(R.id.reciever);
+		reciever.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+
+			}
+		});
 		reciever.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
@@ -288,14 +304,6 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 				if (!hasFocus) {
 					reciever.hintCleanLogo();
 				}
-			}
-		});
-		reciever.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				reciever.showCleanLogo();
-				return false;
 			}
 		});
 		tv_address_edit = (TextView) findViewById(R.id.tv_address_edit);
@@ -311,6 +319,23 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 		clear_btn_tel = (ImageView) findViewById(R.id.clear_btn_tel);
 		clear_btn_tel.setOnClickListener(this);
 		street_edit = (com.edaixi.view.CleanEditText) findViewById(R.id.street_edit);
+		street_edit.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+
+			}
+		});
 		street_edit.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
@@ -318,14 +343,6 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 				if (!hasFocus) {
 					street_edit.hintCleanLogo();
 				}
-			}
-		});
-		street_edit.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				street_edit.showCleanLogo();
-				return false;
 			}
 		});
 		tel_edit = (AutoCompleteTextView) findViewById(R.id.tel_edit);
@@ -349,14 +366,6 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 			@Override
 			public void afterTextChanged(Editable s) {
 
-			}
-		});
-		tel_edit.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				clear_btn_tel.setVisibility(View.VISIBLE);
-				return false;
 			}
 		});
 		tel_edit.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -393,7 +402,7 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 			tv_select_city.setText(lastaddressbean.getCity());
 			tv_select_area.setText(lastaddressbean.getArea());
 			tel_edit.setText(lastaddressbean.getTel());
-			clear_btn_tel.setVisibility(View.GONE);
+			clear_btn_tel.setVisibility(View.INVISIBLE);
 		}
 	}
 
@@ -405,10 +414,9 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 			if (getIntent().getExtras().containsKey("TYPE")) {
 				if (getIntent().getExtras().get("TYPE")
 						.equals(AddressIntentdata.ADDADS)) {
+					// 添加地址的逻辑
 					titel_text.setText("添加");
 					// --------添加地址---新逻辑------------------------
-					tel_edit.setText(saveUtils.getStrSP(KeepingData.PHONE));
-					clear_btn_tel.setVisibility(View.INVISIBLE);
 					if (!AppConfig.getInstance().isLocationFail()) {
 						// 定位成功
 						verifyCityArea(
@@ -444,7 +452,6 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 							&& lastaddressbean.getAddress_line_2() != null) {
 						street_edit
 								.setText(lastaddressbean.getAddress_line_2());
-						street_edit.hintCleanLogo();
 					}
 					if (lastaddressbean != null
 							&& lastaddressbean.getGender() != null
@@ -517,6 +524,17 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 			if (IS_SHOW_CITYPOP && IS_SHOW_AREAPOP) {
 				showCityAreaSelect();
 			}
+			// -----------------------------------------------
+			// if (getIntent().getExtras().get("FROM")
+			// .equals(AddressIntentdata.FROMADSLIST)) {
+			// invisibleInputmethod(rl_city_area);
+			// showCityAreaSelect();
+			// } else if (getIntent().getExtras().get("FROM")
+			// .equals(AddressIntentdata.FROMPLACEORDER)) {
+			// invisibleInputmethod(rl_city_area);
+			// showAreaSelect();
+			// }
+			// -----------------------------------------------
 			break;
 		case R.id.tv_address_edit:
 			invisibleInputmethod(tv_address_edit);
@@ -559,7 +577,6 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 			tv_lady.setCompoundDrawables(null, null, drawableLadyDefault, null);
 			break;
 		case R.id.add_save_btn:
-			LogUtil.e("点击地址保持页面保存按钮");
 			invisibleInputmethod(add_save_btn);
 			if (!NetUtil.getNetworkState(this)) {
 				showdialog("网络不可用，请检查您的网络连接");
@@ -579,11 +596,6 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 				showdialog("姓名不能含有非法字符");
 				return;
 			}
-			if (IsChinese.iszhongwen(tv_address_edit.getText().toString()
-					.trim())) {
-				showdialog("小区或大厦不能含有非法字符");
-				return;
-			}
 			if (TextUtils.isEmpty(address_Gender)) {
 				showdialog("您是先生还是女士呢？");
 				return;
@@ -592,14 +604,12 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 				showdialog("手机号不能为空");
 				return;
 			}
-			if (tel_edit.getText().toString().replace(" ", "").length() != 11
-					|| IsChinese.iszhongwen(tel_edit.getText().toString()
-							.trim())) {
+			if (tel_edit.getText().toString().trim().length() != 11) {
 				showdialog("手机号格式不正确");
 				return;
 			}
 			if (TextUtils.isEmpty(tv_address_edit.getText().toString().trim())) {
-				showdialog("小区或大厦不能为空");
+				showdialog("地址不能为空");
 				return;
 			}
 			if (TextUtils.isEmpty(street_edit.getText().toString().trim())) {
@@ -615,11 +625,9 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 				// 编辑地址
 				parm.clear();
 				parm.put("address_id", address_id);
-				parm.put("username",
-						reciever.getText().toString().replace(" ", "").trim());
-				parm.put("city",
-						tv_select_city.getText().toString().replace(" ", "")
-								.substring(0, 2).trim());
+				parm.put("username", reciever.getText().toString().trim());
+				parm.put("city", tv_select_city.getText().toString().trim()
+						.substring(0, 2).trim());
 				if ((serializableMapBean != null)
 						&& serializableMapBean.getMapItemLog() != null) {
 					parm.put("customer_lat",
@@ -639,18 +647,14 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 				parm.put("address_line_1", tv_address_edit.getText().toString()
 						.replace(" ", "").replace("\n", "").trim());
 				parm.put("address_line_2", street_edit.getText().toString()
-						.replace(" ", "").replace("\n", "").replace("(", "")
-						.replace(")", "").trim());
+						.replace(" ", "").replace("\n", "").trim());
 				parm.put("gender", address_Gender);
 				postdate(parm, path, addressHandler, UPDATEADSSUCCED,
 						UPDATEADSFAILD, true, true);
 			} else {
 				parm.clear();
 				parm.put("user_id", saveUtils.getStrSP(KeepingData.USER_ID));
-				parm.put(
-						"username",
-						reciever.getText().toString().replace(" ", "")
-								.replace("\n", ""));
+				parm.put("username", reciever.getText().toString().trim());
 				if ((serializableMapBean != null)
 						&& serializableMapBean.getMapItemLog() != null) {
 					parm.put("customer_lat",
@@ -671,8 +675,7 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 				parm.put("address_line_1", tv_address_edit.getText().toString()
 						.replace(" ", "").replace("\n", "").trim());
 				parm.put("address_line_2", street_edit.getText().toString()
-						.replace(" ", "").replace("\n", "").replace("(", "")
-						.replace(")", "").trim());
+						.replace(" ", "").replace("\n", "").trim());
 				parm.put("gender", address_Gender);
 				postdate(parm, path, addressHandler, CREATADSSUCCED,
 						CREATADSFAILD, true, true);

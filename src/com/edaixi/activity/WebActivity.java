@@ -51,6 +51,7 @@ public class WebActivity extends BaseActivity {
 					.getSerializableExtra("bannerlistbean");
 			mTitleTextView.setText(bannerlistbean.getTitle());
 			mWebView.loadUrl(bannerlistbean.getUrl());
+			LogUtil.e("进入  网页链接："+bannerlistbean.getUrl());
 		} else {
 			try {
 				mType = WebPageType.ofWebPageType(mBundle.getInt("TYPE", 0));

@@ -2,6 +2,7 @@ package com.edaixi.dataset;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.edaixi.Enum.CouponEntity;
 
 /**
@@ -55,13 +56,9 @@ public class CouponsDataSet implements IDataSet<CouponEntity> {
 		}
 	}
 
-	public List<CouponEntity> addCouponsDataSet(List<CouponEntity> addList) {
-		mDataSet.addAll(addList);
-		return mDataSet;
-	}
-
 	@Override
 	public CouponEntity getitem() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

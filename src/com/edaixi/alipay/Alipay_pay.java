@@ -199,8 +199,6 @@ public class Alipay_pay {
 
 					}
 				}
-				AppConfig.getInstance().setCanPay(true);
-				AppConfig.getInstance().setCanRecharge(true);
 				break;
 
 			case RQF_LOGIN: {

@@ -29,12 +29,6 @@ public class AppConfig {
 	private boolean isOrderZhifubaoPay;
 	private boolean refresh_Address;
 	private boolean locationFail;
-	private boolean isCanPay;
-	private boolean isCanRecharge;
-	private boolean isCanCreateOrder;
-	private boolean isOpenApp;
-	private boolean isFillAddressAuto;
-	private boolean isCanUseRecharge;
 	private String cityareastr;
 	private String mCurrentCity;
 	private String loctioncity;
@@ -44,54 +38,6 @@ public class AppConfig {
 	private String cancleOrderString;
 	private String locationLatString;
 	private String locationLogString;
-
-	public boolean isCanUseRecharge() {
-		return isCanUseRecharge;
-	}
-
-	public void setCanUseRecharge(boolean isCanUseRecharge) {
-		this.isCanUseRecharge = isCanUseRecharge;
-	}
-
-	public boolean isFillAddressAuto() {
-		return isFillAddressAuto;
-	}
-
-	public void setFillAddressAuto(boolean isFillAddressAuto) {
-		this.isFillAddressAuto = isFillAddressAuto;
-	}
-
-	public boolean isOpenApp() {
-		return isOpenApp;
-	}
-
-	public void setOpenApp(boolean isOpenApp) {
-		this.isOpenApp = isOpenApp;
-	}
-
-	public boolean isCanCreateOrder() {
-		return isCanCreateOrder;
-	}
-
-	public void setCanCreateOrder(boolean isCanCreateOrder) {
-		this.isCanCreateOrder = isCanCreateOrder;
-	}
-
-	public boolean isCanPay() {
-		return isCanPay;
-	}
-
-	public void setCanPay(boolean isCanPay) {
-		this.isCanPay = isCanPay;
-	}
-
-	public boolean isCanRecharge() {
-		return isCanRecharge;
-	}
-
-	public void setCanRecharge(boolean isCanRecharge) {
-		this.isCanRecharge = isCanRecharge;
-	}
 
 	public String getLocationLatString() {
 		return locationLatString;
@@ -229,7 +175,7 @@ public class AppConfig {
 		this.loctioncity = loctioncity;
 	}
 
-	public static final String ALREADYLOGIN = "请您登陆";
+	public static final String ALREADYLOGIN = "用户已经登陆";
 
 	public String getmShareOrderId() {
 		return mShareOrderId;

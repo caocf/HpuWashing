@@ -83,8 +83,6 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 							new OrderListAdapterEvent("DepositWXPaySucess"));
 				}
 			}
-			AppConfig.getInstance().setCanPay(true);
-			AppConfig.getInstance().setCanRecharge(true);
 		}
 	}
 }

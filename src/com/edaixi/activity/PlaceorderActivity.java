@@ -88,6 +88,7 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 	List<AddressBean> mMyAddressDataSet = null;
 	private boolean is_fill_address = false;
 	private boolean is_create_address = false;
+	private boolean is_Fill_Auto = true;
 	private boolean is_Create_Order = false;
 	private BannerlistBean bannerlistbean;
 
@@ -108,24 +109,28 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 					finish();
 				} else {
 					showdialog(conmonBean.getError());
-					AppConfig.getInstance().setCanCreateOrder(true);
 				}
 				break;
 			case CREATORDERFAILD:
 				showdialog("创建订单失败");
-				AppConfig.getInstance().setCanCreateOrder(true);
+				LogUtil.e("00000----0000000" + msg.obj);
 				break;
 			case CITYSUCESS:
 				HttpCommonBean conmonBeanCity = gson.fromJson((String) msg.obj,
 						HttpCommonBean.class);
+				String cityResultSucess = (String) msg.obj;
+				Log.d("Citys--sucess", cityResultSucess);
 				if (conmonBeanCity.isRet()) {
 					cityAreaBean = gson.fromJson(conmonBeanCity.getData(),
 							CitysAreaBean.class);
 					AppConfig.getInstance().setCityareastr(
 							conmonBeanCity.getData());
+					Log.d("Citys--area", cityAreaBean.toString());
 				}
 				break;
 			case CITYFAIL:
+				String cityResultFail = (String) msg.obj;
+				Log.d("Citys--fail", cityResultFail);
 				break;
 			case GETADSSUCCED:
 				is_create_address = true;
@@ -150,30 +155,23 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 							e.printStackTrace();
 							return;
 						}
-						if (mMyAddressDataSet.size() > 0) {
-							for (AddressBean addressbean : mMyAddressDataSet) {
-								if (addressbean.isFrequently_address()
-										|| is_fill_address) {
-									if (AppConfig.getInstance()
-											.isFillAddressAuto()
-											&& addressbean
-													.getCity()
-													.equals(saveUtils
-															.getStrSP(KeepingData.User_City))) {
-										address_info
-												.setVisibility(View.VISIBLE);
-										select_add_text
-												.setVisibility(View.GONE);
-										place_name.setText("  "
-												+ addressbean.getUsername());
-										place_phone.setText("  "
-												+ addressbean.getTel());
-										if (addressbean.getAddress() != null)
-											place_address.setText("  "
-													+ addressbean.getAddress()
-															.toString().trim());
-										adsid = addressbean.getAddress_id();
-									}
+						for (AddressBean addressbean : mMyAddressDataSet) {
+							if (addressbean.isFrequently_address()
+									|| is_fill_address) {
+								if (is_Fill_Auto
+										&& addressbean
+												.getCity()
+												.equals(saveUtils
+														.getStrSP(KeepingData.User_City))) {
+									address_info.setVisibility(View.VISIBLE);
+									select_add_text.setVisibility(View.GONE);
+									place_name.setText("  "
+											+ addressbean.getUsername());
+									place_phone.setText("  "
+											+ addressbean.getTel());
+									place_address.setText("  "
+											+ addressbean.getAddress().trim());
+									adsid = addressbean.getAddress_id();
 								}
 							}
 						}
@@ -203,7 +201,6 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 			case GETADSFAILD:
 				break;
 			case GRTDELFEESUCCED:
-				LogUtil.e("获取运费成功----"+msg.obj);
 				HttpCommonBean conmonBeanFee = gson.fromJson((String) msg.obj,
 						HttpCommonBean.class);
 				if (conmonBeanFee.isRet()) {
@@ -242,7 +239,6 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 				}
 				break;
 			case GRTDELFEEFAILED:
-				LogUtil.e("获取运费失败----"+msg.obj);
 				point_text.setVisibility(View.INVISIBLE);
 				deli_fee.setVisibility(View.INVISIBLE);
 				break;
@@ -261,12 +257,10 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 		setContentView(R.layout.activity_placeorder);
 		init(this);
 		saveUtils = new SaveUtils(this);
-		AppConfig.getInstance().setCanCreateOrder(true);
 		initView();
 	}
 
 	private void initView() {
-		AppConfig.getInstance().setFillAddressAuto(true);
 		create_order_btn = (Button) findViewById(R.id.create_order_btn);
 		create_order_btn.setOnClickListener(this);
 		point_text = (TextView) findViewById(R.id.point_text);
@@ -354,7 +348,7 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 			bannerlistbean = (BannerlistBean) getIntent().getSerializableExtra(
 					"bannerlistbean");
 			tv_create_order_title.setText(bannerlistbean.getTitle());
-			if (bannerlistbean.getInner_title() != null) {
+			if(bannerlistbean.getInner_title() != null){
 				tv_create_order_price.setText(bannerlistbean.getInner_title()
 						+ "  ");
 			}
@@ -396,14 +390,6 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 		} else {
 			parms.put("city_id", "1");
 		}
-		if (bannerlistbean != null) {
-			Gson gson = new Gson();
-			InappUrlbean inappurlbean = gson.fromJson(bannerlistbean.getUrl(),
-					InappUrlbean.class);
-			parms.put("category_id", inappurlbean.getId());
-		} else {
-			parms.put("category_id", "1");
-		}
 		getdate(parms, Constants.GET_CITY_DELIVERY_FEE, placeOrderHandler,
 				GRTDELFEESUCCED, GRTDELFEEFAILED, false, false, true);
 	}
@@ -411,7 +397,12 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		getaddresslist();
+		try {
+			Thread.sleep(500);
+			getaddresslist();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -422,20 +413,14 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 			if (intent != null) {
 				adsbean = (AddressBean) intent.getExtras().getSerializable(
 						KeepingData.ADS_BEAN);
-				if (adsbean != null) {
-					AppConfig.getInstance().setFillAddressAuto(false);
-					address_info.setVisibility(View.VISIBLE);
-					select_add_text.setVisibility(View.GONE);
-					place_name.setText("  " + adsbean.getUsername());
-					place_phone.setText("  " + adsbean.getTel());
-					place_address.setText("  " + adsbean.getAddress().trim());
-					adsid = adsbean.getAddress_id();
-					dealutads = place_name.getText().toString().trim();
-				} else {
-					AppConfig.getInstance().setFillAddressAuto(true);
-				}
-			} else {
-				AppConfig.getInstance().setFillAddressAuto(true);
+				is_Fill_Auto = false;
+				address_info.setVisibility(View.VISIBLE);
+				select_add_text.setVisibility(View.GONE);
+				place_name.setText("  " + adsbean.getUsername());
+				place_phone.setText("  " + adsbean.getTel());
+				place_address.setText("  " + adsbean.getAddress().trim());
+				adsid = adsbean.getAddress_id();
+				dealutads = place_name.getText().toString().trim();
 			}
 		}
 	}
@@ -476,13 +461,8 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 					order_text);
 			break;
 		case R.id.create_order_btn:
-			LogUtil.e("进入点击了 isCanCreateOrder"
-					+ AppConfig.getInstance().isCanCreateOrder());
 			TCAgent.onEvent(PlaceorderActivity.this, "下单_下单按钮");
-			if (AppConfig.getInstance().isCanCreateOrder()) {
-				LogUtil.e("进入下单了");
-				createOrder();
-			}
+			createOrder();
 			break;
 		case R.id.back_placeorder_btn:
 			onBackKeyDown();
@@ -497,8 +477,7 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 						&& bannerlistbean.getInner_url() != null) {
 					Intent intent = new Intent(getActivity(), WebActivity.class);
 					BannerlistBean bannerlistBeansBean = new BannerlistBean();
-					bannerlistBeansBean.setTitle("价目中心");
-					bannerlistBeansBean.setInner_title(bannerlistbean
+					bannerlistBeansBean.setTitle(bannerlistbean
 							.getInner_title());
 					bannerlistBeansBean.setUrl(bannerlistbean.getInner_url());
 					intent.putExtra("bannerlistbean", bannerlistBeansBean);
@@ -519,7 +498,6 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 		if (is_Create_Order) {
 			if (IsChinese.iszhongwen(et_order_comment.getText().toString()
 					.trim())) {
-				AppConfig.getInstance().setCanCreateOrder(true);
 				showdialog("备注不能含有非法字符");
 				return;
 			}
@@ -554,12 +532,10 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 				parms.put("category_id", "1");
 			}
 			parms.put("comment",
-					et_order_comment.getText().toString().replace("\n", "")
-							.replace(" ", ""));
+					et_order_comment.getText().toString().replace("\n", ""));
 			parms.put("order_place", adsid);
 			postdate(parms, Constants.getcreateorder, placeOrderHandler,
 					CREATORDERSUCCED, CREATORDERFAILD, false, true);
-			AppConfig.getInstance().setCanCreateOrder(false);
 		}
 	}
 

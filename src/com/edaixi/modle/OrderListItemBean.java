@@ -31,42 +31,6 @@ public class OrderListItemBean implements Serializable {
 	private String washing_time;
 	private String washing_date;
 	private String category_id;
-	private String courier_name_qu;
-	private String courier_phone_qu;
-	private String courier_name_song;
-	private String courier_phone_song;
-
-	public String getCourier_name_qu() {
-		return courier_name_qu;
-	}
-
-	public void setCourier_name_qu(String courier_name_qu) {
-		this.courier_name_qu = courier_name_qu;
-	}
-
-	public String getCourier_phone_qu() {
-		return courier_phone_qu;
-	}
-
-	public void setCourier_phone_qu(String courier_phone_qu) {
-		this.courier_phone_qu = courier_phone_qu;
-	}
-
-	public String getCourier_name_song() {
-		return courier_name_song;
-	}
-
-	public void setCourier_name_song(String courier_name_song) {
-		this.courier_name_song = courier_name_song;
-	}
-
-	public String getCourier_phone_song() {
-		return courier_phone_song;
-	}
-
-	public void setCourier_phone_song(String courier_phone_song) {
-		this.courier_phone_song = courier_phone_song;
-	}
 
 	public String getCategory_id() {
 		return category_id;
@@ -381,7 +345,7 @@ public class OrderListItemBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "OrderListItemBean [order_id=" + order_id + ", order_sn="
+		return "OrderListItembean [order_id=" + order_id + ", order_sn="
 				+ order_sn + ", order_created_at=" + order_created_at
 				+ ", order_price=" + order_price + ", order_status="
 				+ order_status + ", order_status_text=" + order_status_text
@@ -396,20 +360,11 @@ public class OrderListItemBean implements Serializable {
 				+ ", yingfu=" + yingfu + ", has_clothes_detail="
 				+ has_clothes_detail + ", good=" + good + ", applogo="
 				+ applogo + ", total_score=" + total_score + ", washing_score="
-				+ washing_score + ", washing_time=" + washing_time
-				+ ", washing_date=" + washing_date + ", category_id="
-				+ category_id + ", courier_name_qu=" + courier_name_qu
-				+ ", courier_phone_qu=" + courier_phone_qu
-				+ ", courier_name_song=" + courier_name_song
-				+ ", courier_phone_song=" + courier_phone_song
-				+ ", logistics_score=" + logistics_score + ", service_score="
-				+ service_score + ", order_comments=" + order_comments
-				+ ", can_be_commented=" + can_be_commented
+				+ washing_score + ", logistics_score=" + logistics_score
+				+ ", service_score=" + service_score + ", order_comments="
+				+ order_comments + ", can_be_commented=" + can_be_commented
 				+ ", exclusive_channels=" + exclusive_channels
-				+ ", order_can_share=" + order_can_share + ", share_url="
-				+ share_url + ", share_title=" + share_title
-				+ ", share_content=" + share_content + ", share_image_url="
-				+ share_image_url + "]";
+				+ ", order_can_share=" + order_can_share + "]";
 	}
 
 }

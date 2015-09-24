@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
+    android:background="@color/white"
     tools:context="com.edaixi.activity.CityselectActivity" >
 
     <RelativeLayout
@@ -18,11 +18,11 @@
 
             <ImageView
                 android:id="@+id/citylist_back_btn"
+                android:contentDescription="@null"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="15dp"
-                android:contentDescription="@null"
                 android:src="@drawable/city_close" />
         </LinearLayout>
 
@@ -43,7 +43,7 @@
         android:layout_below="@+id/cityselect_title"
         android:layout_marginLeft="15dp"
         android:gravity="center_vertical"
-        android:text="当前定位城市"
+        android:text="定位城市"
         android:textColor="@android:color/black" />
 
     <LinearLayout
@@ -51,116 +51,29 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_below="@+id/loctioncitytext"
-        android:background="@color/white"
+        android:background="#f0f0f0"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/city_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
             android:layout_marginLeft="15dp"
-            android:background="@drawable/hot_city_bg"
+            android:background="@color/white"
+            android:maxEms="3" 
+            android:singleLine="true"
             android:ellipsize="end"
             android:gravity="center"
-            android:maxEms="10"
-            android:padding="10dp"
-            android:singleLine="true"
-            android:textSize="16sp"
-            android:text=""
+            android:text="超出服务范围"
             android:textColor="#3E3E3E" />
-
-        <TextView
-            android:id="@+id/location_city_text_tips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:gravity="center"
-            android:padding="5dp"
-            android:singleLine="true"
-            android:text="该城市尚未开通服务，请选择下方城市"
-            android:textColor="@color/dark_blue"
-            android:visibility="gone" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/hot_city_text"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_below="@+id/city_layout"
-        android:layout_marginLeft="15dp"
-        android:gravity="center_vertical"
-        android:text="热门城市"
-        android:textColor="@android:color/black" />
-
-    <LinearLayout
-        android:id="@+id/ll_hot_city"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/hot_city_text"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:padding="20dp" >
-
-        <TextView
-            android:id="@+id/tv_hot_city_beijing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/hot_city_bg"
-            android:padding="10dp"
-            android:text="北京  "
-            android:textColor="#3E3E3E"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tv_hot_city_shanghai"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/hot_city_bg"
-            android:padding="10dp"
-            android:text="上海  "
-            android:textColor="#3E3E3E"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tv_hot_city_guangzhou"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/hot_city_bg"
-            android:padding="10dp"
-            android:text="广州  "
-            android:textColor="#3E3E3E"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tv_hot_city_shenzhen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/hot_city_bg"
-            android:padding="10dp"
-            android:text="深圳  "
-            android:textColor="#3E3E3E"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/other_city_text"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_below="@+id/ll_hot_city"
-        android:layout_marginLeft="15dp"
-        android:gravity="center_vertical"
-        android:text="其他城市"
-        android:textColor="@android:color/black" />
 
     <com.edaixi.citylist.widget.ContactListViewImpl
         android:id="@+id/open_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/other_city_text"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/city_layout"
         android:background="#ffffff"
         android:cacheColorHint="#00000000"
         android:divider="@null"

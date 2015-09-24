@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.edaixi.activity.LoginActivity;
 import com.edaixi.data.AppConfig;
 import com.edaixi.data.KeepingData;
+import com.edaixi.view.CustomDialog;
 import com.edaixi.view.RongchainProgressDialog;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -124,7 +125,8 @@ public class MyhttpUtils {
 
 			@Override
 			public void onStart() {
-				LogUtil.e("url--------get-----" + url);
+				LogUtil.e("url--------get-----" + url + "paras--"
+						+ params.getCharset());
 				if (isshow) {
 					((Activity) context).runOnUiThread(new Runnable() {
 						@Override
@@ -182,8 +184,6 @@ public class MyhttpUtils {
 						}
 					}
 				});
-				
-				LogUtil.e("---url---"+url+"請求返回結果-get"+result.result);
 				AppConfig appconfig = AppConfig.getInstance();
 				JSONObject json;
 				try {
@@ -192,7 +192,6 @@ public class MyhttpUtils {
 							&& json.getString("error").contains("401")) {
 						saveutils.saveBoolSP(KeepingData.LOGINED, false);
 						saveutils.saveStrSP("user_token", "");
-						saveutils.saveStrSP("user_id", "");
 						saveutils
 								.saveBoolSP(KeepingData.IS_FIRSTLOGINED, false);
 						if (AppConfig.getInstance().isIslogin()) {
@@ -245,7 +244,7 @@ public class MyhttpUtils {
 							if (!((Activity) context).isFinishing()) {
 								rongchainProgress = RongchainProgressDialog
 										.createProgressDialog(mContext);
-								rongchainProgress.setMessage("正在拼命加载...");
+								rongchainProgress.setMessage("小e,正在拼命加载...");
 								rongchainProgress.show();
 							}
 						}
@@ -295,7 +294,6 @@ public class MyhttpUtils {
 						}
 					}
 				});
-				LogUtil.e("---url---"+url+"請求返回結果-post"+result.result);
 				JSONObject json;
 				try {
 					json = new JSONObject(result.result);

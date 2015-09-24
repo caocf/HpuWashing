@@ -1,0 +1,131 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/clothing_detail_title"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/e_h_top_bar" >
+
+        <ImageView
+            android:id="@+id/activity_orderdetail_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:contentDescription="@null"
+            android:onClick="goBack"
+            android:src="@drawable/login_back_btn" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="衣物详情"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_line_01"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/clothing_detail_title"
+        android:background="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/ll_clothing_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_line_01"
+        android:background="@android:color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/tv_clothingdetail_title"
+            style="@style/textsize_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/clothes_sorting_ok"
+            android:gravity="center"
+            android:text="订单090234568已经分拣完成" />
+
+        <TextView
+            android:id="@+id/tv_clothingdetail_price"
+            style="@style/textsize_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="  "
+            android:textColor="#1aa4f2" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/clothing_line_1"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/ll_clothing_title"
+        android:background="@color/gray" />
+
+    <LinearLayout
+        android:id="@+id/ll_show_clothing_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/clothing_line_1"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:paddingBottom="0dp" >
+
+        <TextView
+            android:id="@+id/tv_clothing_cloth_title"
+            style="@style/textsize_3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="衣物名称" />
+
+        <TextView
+            android:id="@+id/tv_clothing_color"
+            style="@style/textsize_3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="衣物颜色" />
+
+        <TextView
+            android:id="@+id/tv_clothing_cloth_condition"
+            style="@style/textsize_3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="衣服瑕疵" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_title_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_show_clothing_title"
+        android:contentDescription="@null"
+        android:src="@drawable/clothes_solid_line" />
+
+    <ExpandableListView
+        android:id="@+id/exlv_order_clothing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/iv_title_line"
+        android:divider="@drawable/clothes_dotted_line"
+        android:dividerHeight="0dp" >
+    </ExpandableListView>
+
+</RelativeLayout>

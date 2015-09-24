@@ -15,26 +15,8 @@ public class CouponBean {
 	private String exclusive_channels_display;
 	private String coupon_time_display;
 	private int coupon_least_price;
-	private String category_id;
-	private String category_display;
 
 	public CouponBean() {
-	}
-
-	public String getCategory_id() {
-		return category_id;
-	}
-
-	public void setCategory_id(String category_id) {
-		this.category_id = category_id;
-	}
-
-	public String getCategory_display() {
-		return category_display;
-	}
-
-	public void setCategory_display(String category_display) {
-		this.category_display = category_display;
 	}
 
 	public String getCoupon_time_display() {
