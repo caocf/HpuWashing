@@ -36,9 +36,15 @@ public class KeepingData {
 	public static final String Refresh_Address = "refresh_address";
 
 	public static final String is_First_In = "is_first_in";
+	public static final String is_Show_Location_Guide = "is_show_location_guide";
 	public static final String is_Show_Home_Guide = "is_show_home_guide";
 	public static final String is_Show_Order_Guide = "is_show_order_guide";
 	public static final String is_Show_Address_Guide = "is_show_address_guide";
 	public static final String select_Map_Item = "select_map_item";
 
+	public static final String select_City_Item = "select_city_item";
+	public static final String is_Select_City_Item = "is_select_city_item";
+	public static final String is_Select_Hot_City = "is_select_hot_city";
+	public static final String Select_Hot_City = "select_hot_city";
+	public static final String is_Open_App = "is_open_app";
 }

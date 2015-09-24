@@ -19,6 +19,10 @@ public class PinYin {
 				}
 			}
 		}
-		return sb.toString().toLowerCase();
+		if(input.contains("重庆")){
+			return "c";
+		}else {
+			return sb.toString().toLowerCase();
+		}
 	}
 }

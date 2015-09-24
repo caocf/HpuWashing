@@ -8,7 +8,7 @@ import android.util.Log;
 
 @SuppressLint("SimpleDateFormat")
 public class LogUtil {
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 
 	public static void d(String TAG, String method, String msg) {
 		Log.d(TAG, "[" + method + "]" + msg);

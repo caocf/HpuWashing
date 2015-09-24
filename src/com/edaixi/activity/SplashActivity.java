@@ -9,16 +9,19 @@ import com.edaixi.util.SaveUtils;
 import com.networkbench.agent.impl.NBSAppAgent;
 import com.tendcloud.tenddata.TCAgent;
 import com.umeng.analytics.MobclickAgent;
-
+import com.zxinsight.MagicWindowSDK;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageView;
 
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends BaseActivity implements OnClickListener {
 	// SP文件判断是否为此版本第一次启动的键值
 	private static final String KEY_FIRST_START = "FirstStart_V1.0";
 
@@ -49,11 +52,27 @@ public class SplashActivity extends BaseActivity {
 		setContentView(R.layout.activity_splash);
 		init(this);
 		TCAgent.init(this);
-		TCAgent.setReportUncaughtExceptions(true);
+		TCAgent.setReportUncaughtExceptions(false);
 		// 初始化听云监测
+		// 注释听云注册
 		NBSAppAgent.setLicenseKey("a795bf585e584e05bd435982c27625f7")
 				.withLocationServiceEnabled(true).start(this);
 
+		// 初始化网页打开应用的schema
+		Intent intent = getIntent();
+		String scheme = intent.getScheme();
+		Uri uri = intent.getData();
+		System.out.println("scheme:" + scheme);
+		if (uri != null) {
+			String host = uri.getHost();
+			String dataString = intent.getDataString();
+			String id = uri.getQueryParameter("id");
+			String path = uri.getPath();
+			String path1 = uri.getEncodedPath();
+			String queryString = uri.getQuery();
+		}
+		// 初始化魔窗
+		MagicWindowSDK.initSDK(this);
 		mCommonListener = new CommonCallbackListener();
 		mFlag = getIntent().getExtras() == null ? 0 : getIntent().getExtras()
 				.getInt("FLAG", 0);
@@ -150,5 +169,11 @@ public class SplashActivity extends BaseActivity {
 	protected boolean onBackKeyDown() {
 		finish(0, 0);
 		return false;
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+
 	}
 }

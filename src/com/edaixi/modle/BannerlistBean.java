@@ -11,6 +11,24 @@ public class BannerlistBean implements Serializable {
 	private String inner_url;
 	private String inner_type;
 	private String inner_title;
+	private int MagicIndex;
+	private String MagicIndexKey;
+
+	public int getMagicIndex() {
+		return MagicIndex;
+	}
+
+	public void setMagicIndex(int magicIndex) {
+		MagicIndex = magicIndex;
+	}
+
+	public String getMagicIndexKey() {
+		return MagicIndexKey;
+	}
+
+	public void setMagicIndexKey(String magicIndexKey) {
+		MagicIndexKey = magicIndexKey;
+	}
 
 	public String getInner_url() {
 		return inner_url;
@@ -73,7 +91,8 @@ public class BannerlistBean implements Serializable {
 		return "BannerlistBean [url=" + url + ", url_type=" + url_type
 				+ ", title=" + title + ", image_url=" + image_url
 				+ ", inner_url=" + inner_url + ", inner_type=" + inner_type
-				+ ", inner_title=" + inner_title + "]";
+				+ ", inner_title=" + inner_title + ", MagicIndex=" + MagicIndex
+				+ ", MagicIndexKey=" + MagicIndexKey + "]";
 	}
 
 }

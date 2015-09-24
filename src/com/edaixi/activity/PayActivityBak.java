@@ -1,10 +1,12 @@
 package com.edaixi.activity;
 
+import java.lang.reflect.Type;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,18 +34,26 @@ import android.widget.Toast;
 import com.edaixi.Enum.CouponEntity;
 import com.edaixi.Enum.UseConponType;
 import com.edaixi.alipay.Alipay_pay;
+import com.edaixi.baidupay.BaiDuPayUtil;
 import com.edaixi.data.AppConfig;
 import com.edaixi.data.KeepingData;
+import com.edaixi.modle.BaiDuPayOrderInfo;
+import com.edaixi.modle.ClothingOrderInfo;
+import com.edaixi.modle.ExtraCardBean;
+import com.edaixi.modle.GetCouponsBean;
 import com.edaixi.modle.Icard;
+import com.edaixi.modle.OrderListItemBean;
 import com.edaixi.modle.Trade_no;
 import com.edaixi.util.Constants;
 import com.edaixi.util.LogUtil;
 import com.edaixi.util.OrderListAdapterEvent;
+import com.edaixi.util.ParseOrderList;
 import com.edaixi.util.SaveUtils;
 import com.edaixi.view.SingleView;
 import com.edaixi.wechat.Util;
 import com.edaixi.wechat.Wx_MD5;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tencent.mm.sdk.constants.Build;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -57,10 +67,12 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 
 	private static final int GETICARDSUCCED = 4;
 	private static final int GETICARDFAILD = 5;
-	private Button pay_btn;
-	private TextView pay_order_value;
+	private static final int GETEXTRAICARDSUCCED = 9;
+	private static final int GETEXTRAICARDFAILD = 10;
+	private static final int GETCLOTHINGSUCCED = 7;
+	private static final int GETCLOTHINGFAILD = 8;
+	private Button bt_pay_btn;
 	private HashMap<String, String> parm;
-	private AppConfig mAppConfig;
 	private Handler pHandler;
 	private String order_price;
 	private CouponEntity coupon;
@@ -69,8 +81,13 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 	private final int GETPAYORDERNUMFAILD = 3;
 	private int method = 1;
 	private Icard icard;
-	private TextView pay_coupon_value;
+	private TextView tv_pay_ordersn;
+	private TextView tv_pay_clothes_count;
+	private TextView tv_pay_order_value;
+	private TextView tv_pay_coupon_value;
+	private TextView tv_pay_coupon_text;
 	private String order_id = "";
+	private String category_id = "";
 	private String order_sn = "";
 	private IWXAPI api;
 	private RelativeLayout coupon_relayout;
@@ -81,17 +98,65 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 	private String exclusive_channels;
 	private Double yingfu_price;
 	private Trade_no trade_no;
-	private TextView pay_coupon_text;
 	private String coupon_paid;
 	private int WxZhiFu = 2;
 	private int ZhiFuBaoZhiFu = 6;
 	private int YuEZhiFu = 1;
 	private int XianJinZhiFu = 3;
+	private int ExtraIcardZhiFu = 10;
+	private int BaiDuZhiFu = 11;
 	private DecimalFormat df;
 	com.edaixi.view.SingleView view_pay_type_wechat;
 	com.edaixi.view.SingleView view_pay_type_alipay;
+	com.edaixi.view.SingleView view_pay_type_baidupay;
 	com.edaixi.view.SingleView view_pay_type_recharge;
 	com.edaixi.view.SingleView view_pay_type_cash;
+	com.edaixi.view.SingleView view_pay_type_luxury;
+	private ArrayList<ClothingOrderInfo> parseClothingDetail;
+
+	Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case GETCLOTHINGSUCCED:
+				String clothingResultSucess = (String) msg.obj;
+				ParseOrderList parseOrderList = new ParseOrderList();
+				parseClothingDetail = parseOrderList
+						.parseClothingDetail(clothingResultSucess);
+				tv_pay_clothes_count.setText("共" + parseClothingDetail.size()
+						+ "件衣服");
+				break;
+			case GETCLOTHINGFAILD:
+				break;
+			case GETEXTRAICARDSUCCED:
+				String extracardString = msg.obj.toString();
+				Gson gson = new Gson();
+				GetCouponsBean fromJson = gson.fromJson(extracardString,
+						GetCouponsBean.class);
+				String data = fromJson.getData();
+				Type contentType = new TypeToken<ArrayList<ExtraCardBean>>() {
+				}.getType();
+				List<ExtraCardBean> mExtraCardBeans = null;
+				try {
+					mExtraCardBeans = gson.fromJson(data, contentType);
+					if (mExtraCardBeans.size() > 0
+							&& (category_id.equals("4") || category_id
+									.equals("5"))) {
+						view_pay_type_luxury.setVisibility(View.VISIBLE);
+						view_pay_type_luxury.setPayRechargeVisable(true);
+						view_pay_type_luxury.setPayRechargeText("有效期至:"
+								+ mExtraCardBeans.get(0).getAvailable_at());
+					} else {
+						view_pay_type_luxury.setVisibility(View.GONE);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				break;
+			case GETEXTRAICARDFAILD:
+				break;
+			}
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +166,6 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 		init(this);
 		initView();
 		parm = new HashMap<String, String>();
-		mAppConfig = AppConfig.getInstance();
 		saveutils = new SaveUtils(this);
 		df = new DecimalFormat("0.00");
 		EventBus.getDefault().register(this);
@@ -118,29 +182,42 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 		}
 		// -----------微信支付-----------------------------------------
 		DecimalFormat df = new DecimalFormat("0.00");
-		order_price = getIntent().getExtras().getString("order_price");
-		coupon_paid = getIntent().getExtras().getString("coupon_paid");
-		order_id = getIntent().getExtras().getString("order_id");
-		order_sn = getIntent().getExtras().getString("order_sn");
+		if (getIntent().getExtras() != null) {
+			orderItem = (OrderListItemBean) getIntent().getSerializableExtra(
+					"PayOrderItem");
+			order_price = orderItem.getOrder_price();
+			coupon_paid = orderItem.getCoupon_paid();
+			order_id = orderItem.getOrder_id();
+			category_id = orderItem.getCategory_id();
+			order_sn = orderItem.getOrder_sn();
+			StringBuilder sBuilder = new StringBuilder(order_sn);
+			tv_pay_ordersn.setText("订单编号： "
+					+ sBuilder.insert(sBuilder.toString().length() - 6, "  "));
+			tv_pay_order_value.setText(order_price);
+		}
+		getClothingDetail();
+		getExtraIcard();
 		if (coupon_paid != null) {
 			yingfu_price = Double.valueOf(order_price)
 					- Double.valueOf(coupon_paid);
 			yingfu_price = Double.valueOf(df.format(yingfu_price));
 			if (!coupon_paid.equals("0.0")) {
-				pay_coupon_value.setText("-¥" + coupon_paid);
-				pay_coupon_text.setVisibility(View.GONE);
+				tv_pay_coupon_value.setText("-¥" + coupon_paid);
+				tv_pay_coupon_text.setVisibility(View.GONE);
 				coupon_relayout.setClickable(false);
 			}
 			if (yingfu_price <= 0) {
 				yingfu_price = 0.0;
-				pay_btn.setText("确定");
+				bt_pay_btn.setText("确定");
 				method = 1;
 				view_pay_type_wechat.setVisibility(View.GONE);
 				view_pay_type_alipay.setVisibility(View.GONE);
 				view_pay_type_recharge.setVisibility(View.GONE);
+				view_pay_type_luxury.setVisibility(View.GONE);
+				view_pay_type_baidupay.setVisibility(View.GONE);
 				view_pay_type_cash.setVisibility(View.GONE);
 			} else {
-				pay_btn.setText("需支付:¥" + df.format(yingfu_price));
+				bt_pay_btn.setText("需支付:¥" + df.format(yingfu_price));
 			}
 		}
 
@@ -149,37 +226,46 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 		if (exclusive_channels != null) {
 			reInitPayType(exclusive_channels);
 		}
-		pay_order_value.setText("¥" + order_price);
 		getIcard();
 	}
 
 	private void initView() {
 		pHandler = new PayHandler();
 		view_pay_type_wechat = (SingleView) findViewById(R.id.view_pay_type_wechat);
-		view_pay_type_wechat.setPayTypeLogo(R.drawable.wechat);
+		view_pay_type_wechat.setPayTypeLogo(R.drawable.wechat_pay_icon);
 		view_pay_type_wechat.setPayTitle("微信支付");
 		view_pay_type_wechat.setOnClickListener(this);
 		view_pay_type_alipay = (SingleView) findViewById(R.id.view_pay_type_alipay);
-		view_pay_type_alipay.setPayTypeLogo(R.drawable.alipay);
+		view_pay_type_alipay.setPayTypeLogo(R.drawable.ali_pay_icon);
 		view_pay_type_alipay.setPayTitle("支付宝支付");
 		view_pay_type_alipay.setOnClickListener(this);
 		view_pay_type_alipay.setPayTypeChecked(true);
+		view_pay_type_baidupay = (SingleView) findViewById(R.id.view_pay_type_baidupay);
+		view_pay_type_baidupay.setPayTypeLogo(R.drawable.baidu_pay_icon);
+		view_pay_type_baidupay.setPayTitle("百度支付");
+		view_pay_type_baidupay.setOnClickListener(this);
 		view_pay_type_recharge = (SingleView) findViewById(R.id.view_pay_type_recharge);
-		view_pay_type_recharge.setPayTypeLogo(R.drawable.balance);
+		view_pay_type_recharge.setPayTypeLogo(R.drawable.balance_pay_icon);
 		view_pay_type_recharge.setPayTitle("余额支付");
 		view_pay_type_recharge.setOnClickListener(this);
 		view_pay_type_cash = (SingleView) findViewById(R.id.view_pay_type_cash);
-		view_pay_type_cash.setPayTypeLogo(R.drawable.money);
+		view_pay_type_cash.setPayTypeLogo(R.drawable.cash_pay_icon);
 		view_pay_type_cash.setPayTitle("现金支付");
 		view_pay_type_cash.setOnClickListener(this);
-		pay_coupon_value = (TextView) findViewById(R.id.pay_coupon_value);
-		pay_order_value = (TextView) findViewById(R.id.pay_order_value);
+		view_pay_type_luxury = (SingleView) findViewById(R.id.view_pay_type_luxury);
+		view_pay_type_luxury.setPayTypeLogo(R.drawable.luxury_pay_icon);
+		view_pay_type_luxury.setPayTitle("奢护年卡");
+		view_pay_type_luxury.setOnClickListener(this);
+		tv_pay_ordersn = (TextView) findViewById(R.id.tv_pay_ordersn);
+		tv_pay_clothes_count = (TextView) findViewById(R.id.tv_pay_clothes_count);
+		tv_pay_coupon_value = (TextView) findViewById(R.id.tv_pay_coupon_value);
+		tv_pay_order_value = (TextView) findViewById(R.id.tv_pay_order_value);
 		findViewById(R.id.pay_back_btn).setOnClickListener(this);
-		pay_btn = (Button) findViewById(R.id.pay_btn);
+		bt_pay_btn = (Button) findViewById(R.id.bt_pay_btn);
 		coupon_relayout = (RelativeLayout) findViewById(R.id.coupon_relayout);
 		coupon_relayout.setOnClickListener(this);
-		pay_coupon_text = (TextView) findViewById(R.id.pay_coupon_text);
-		pay_btn.setOnClickListener(this);
+		tv_pay_coupon_text = (TextView) findViewById(R.id.tv_pay_coupon_text);
+		bt_pay_btn.setOnClickListener(this);
 
 	}
 
@@ -201,23 +287,34 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 				yingfu_price = Double.valueOf(order_price)
 						- Double.valueOf(coupon.getCouponPrice());
 				yingfu_price = Double.valueOf(df.format(yingfu_price));
-				pay_coupon_value.setText("-¥" + coupon.getCouponPrice());
-				pay_coupon_text.setVisibility(View.GONE);
+				tv_pay_coupon_value.setText("-¥" + coupon.getCouponPrice());
+				tv_pay_coupon_text.setVisibility(View.GONE);
 				if (Double.valueOf(order_price) <= (double) coupon
 						.getCouponPrice()) {
-					pay_btn.setText("确定");
+					bt_pay_btn.setText("确定");
 					method = YuEZhiFu;
 					view_pay_type_wechat.setVisibility(View.GONE);
 					view_pay_type_alipay.setVisibility(View.GONE);
+					view_pay_type_baidupay.setVisibility(View.GONE);
+					view_pay_type_luxury.setVisibility(View.GONE);
 					view_pay_type_recharge.setVisibility(View.GONE);
 					view_pay_type_cash.setVisibility(View.GONE);
 				} else {
-					pay_btn.setText("需支付¥:" + df.format(yingfu_price));
+					bt_pay_btn.setText("需支付¥:" + df.format(yingfu_price));
 				}
 			}
 		}
 	}
 
+	// 获取奢侈品年卡信息
+	private void getExtraIcard() {
+		parm.clear();
+		parm.put("user_id", saveutils.getStrSP(KeepingData.USER_ID));
+		getdate(parm, Constants.getextraaccount, handler, GETEXTRAICARDSUCCED,
+				GETEXTRAICARDFAILD, false, true, false);
+	}
+
+	// 获取会员卡信息
 	private void getIcard() {
 		parm.clear();
 		parm.put("user_id", saveutils.getStrSP(KeepingData.USER_ID));
@@ -248,6 +345,8 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 			method = WxZhiFu;
 			view_pay_type_wechat.setPayTypeChecked(true);
 			view_pay_type_alipay.setPayTypeChecked(false);
+			view_pay_type_baidupay.setPayTypeChecked(false);
+			view_pay_type_luxury.setPayTypeChecked(false);
 			view_pay_type_recharge.setPayTypeChecked(false);
 			view_pay_type_cash.setPayTypeChecked(false);
 			break;
@@ -255,6 +354,26 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 			method = ZhiFuBaoZhiFu;
 			view_pay_type_wechat.setPayTypeChecked(false);
 			view_pay_type_alipay.setPayTypeChecked(true);
+			view_pay_type_baidupay.setPayTypeChecked(false);
+			view_pay_type_luxury.setPayTypeChecked(false);
+			view_pay_type_recharge.setPayTypeChecked(false);
+			view_pay_type_cash.setPayTypeChecked(false);
+			break;
+		case R.id.view_pay_type_baidupay:
+			method = BaiDuZhiFu;
+			view_pay_type_wechat.setPayTypeChecked(false);
+			view_pay_type_alipay.setPayTypeChecked(false);
+			view_pay_type_baidupay.setPayTypeChecked(true);
+			view_pay_type_luxury.setPayTypeChecked(false);
+			view_pay_type_recharge.setPayTypeChecked(false);
+			view_pay_type_cash.setPayTypeChecked(false);
+			break;
+		case R.id.view_pay_type_luxury:
+			method = ExtraIcardZhiFu;
+			view_pay_type_wechat.setPayTypeChecked(false);
+			view_pay_type_alipay.setPayTypeChecked(false);
+			view_pay_type_baidupay.setPayTypeChecked(false);
+			view_pay_type_luxury.setPayTypeChecked(true);
 			view_pay_type_recharge.setPayTypeChecked(false);
 			view_pay_type_cash.setPayTypeChecked(false);
 			break;
@@ -262,6 +381,8 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 			method = YuEZhiFu;
 			view_pay_type_wechat.setPayTypeChecked(false);
 			view_pay_type_alipay.setPayTypeChecked(false);
+			view_pay_type_baidupay.setPayTypeChecked(false);
+			view_pay_type_luxury.setPayTypeChecked(false);
 			view_pay_type_recharge.setPayTypeChecked(true);
 			view_pay_type_cash.setPayTypeChecked(false);
 			break;
@@ -269,13 +390,15 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 			method = XianJinZhiFu;
 			view_pay_type_wechat.setPayTypeChecked(false);
 			view_pay_type_alipay.setPayTypeChecked(false);
+			view_pay_type_baidupay.setPayTypeChecked(false);
+			view_pay_type_luxury.setPayTypeChecked(false);
 			view_pay_type_recharge.setPayTypeChecked(false);
 			view_pay_type_cash.setPayTypeChecked(true);
 			break;
 		case R.id.pay_back_btn:
 			onBackKeyDown();
 			break;
-		case R.id.pay_btn:
+		case R.id.bt_pay_btn:
 			getPayOrder(method);
 			break;
 		case R.id.coupon_relayout:
@@ -284,6 +407,7 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 			mBundle.putSerializable("TYPE", UseConponType.USE);
 			mBundle.putDouble("MONEY", Double.valueOf(order_price));
 			mBundle.putString("Order_Id", order_id);
+			mBundle.putString("Category_Id", category_id);
 			mBundle.putString("Pay_Coupon", "Pay_Coupon");
 			intent.putExtras(mBundle);
 			startActivityForResult(intent, Constants.ADSREQUEST);
@@ -377,6 +501,32 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 							AppConfig.getInstance().setOrderZhifubaoPay(true);
 						}
 						break;
+					case 10:
+						// 奢侈品年卡支付
+						if (jsonObject.getBoolean("ret")) {
+							EventBus.getDefault().post(
+									new OrderListAdapterEvent(
+											"ExtraIcardPaySucess"));
+							finish(0, 0);
+						} else {
+							showdialog(jsonObject.getString("error"));
+						}
+						break;
+					case 11:
+						// 百度支付
+						if (method == BaiDuZhiFu) {
+							LogUtil.e("开始进入百度支付");
+							BaiDuPayOrderInfo baiDuPayOrderInfo = new BaiDuPayOrderInfo();
+							baiDuPayOrderInfo.setOrder_no(trade_no
+									.getTrade_no());
+							Double d_s = Double.valueOf(yingfu_price * 100);
+							int price = d_s.intValue();
+							baiDuPayOrderInfo.setUnit_amount("" + price);
+							BaiDuPayUtil baiDuPayUtil = new BaiDuPayUtil(
+									PayActivityBak.this, baiDuPayOrderInfo);
+							baiDuPayUtil.pay();
+						}
+						break;
 					case 1:
 						if (jsonObject.getBoolean("ret")) {
 							TalkingDataAppCpa
@@ -431,6 +581,7 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 						} else {
 							initPayType();
 							view_pay_type_alipay.setPayTypeChecked(true);
+							view_pay_type_recharge.setPayRechargeTips(true);
 							method = ZhiFuBaoZhiFu;
 						}
 					}
@@ -483,6 +634,14 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 			view_pay_type_recharge.setVisibility(View.VISIBLE);
 			view_pay_type_cash.setVisibility(View.VISIBLE);
 		}
+	}
+
+	public void getClothingDetail() {
+		parm.clear();
+		parm.put("user_id", saveutils.getStrSP("user_id"));
+		parm.put("order_id", order_id);
+		this.getdate(parm, Constants.getorderclothing, handler,
+				GETCLOTHINGSUCCED, GETCLOTHINGFAILD, false, false, false);
 	}
 
 	// -----------微信支付-----------------------------------------
@@ -692,6 +851,7 @@ public class PayActivityBak extends BaseActivity implements OnClickListener {
 
 	private long timeStamp;
 	private boolean wxAppInstalled;
+	private OrderListItemBean orderItem;
 
 	private String genPackage(List<NameValuePair> params) {
 		StringBuilder sb = new StringBuilder();

@@ -60,53 +60,56 @@
             android:textColor="@color/white" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv_address_true_tips"
-        style="@style/textsize_3"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/order_title"
-        android:background="@color/gray"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:text="可用地址"
-        android:visibility="gone" />
+        android:orientation="vertical" >
 
-    <com.edaixi.swipemenu.widget.SwipeMenuListView
-        android:id="@+id/order_address_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_address_true_tips"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@color/myaddress_activity_list_dividercolor"
-        android:dividerHeight="0.5dp"
-        android:listSelector="@drawable/activity_coupon_list_selector"
-        android:overScrollMode="never" />
+        <TextView
+            android:id="@+id/tv_address_true_tips"
+            style="@style/textsize_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:text="可用地址"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/tv_address_false_tips"
-        style="@style/textsize_3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/order_address_list"
-        android:background="@color/gray"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:text="不可用地址"
-        android:visibility="gone" />
+        <com.edaixi.swipemenu.widget.SwipeMenuListView
+            android:id="@+id/order_address_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@color/myaddress_activity_list_dividercolor"
+            android:dividerHeight="0.5dp"
+            android:listSelector="@drawable/activity_coupon_list_selector"
+            android:overScrollMode="never" />
 
-    <com.edaixi.swipemenu.widget.SwipeMenuListView
-        android:id="@+id/order_address_list_notuse"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_address_false_tips"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@color/myaddress_activity_list_dividercolor"
-        android:dividerHeight="0.5dp"
-        android:listSelector="@drawable/activity_coupon_list_selector"
-        android:overScrollMode="never" />
+        <TextView
+            android:id="@+id/tv_address_false_tips"
+            style="@style/textsize_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:text="不可用地址"
+            android:visibility="gone" />
+
+        <com.edaixi.swipemenu.widget.SwipeMenuListView
+            android:id="@+id/order_address_list_notuse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@color/myaddress_activity_list_dividercolor"
+            android:dividerHeight="0.5dp"
+            android:listSelector="@drawable/activity_coupon_list_selector"
+            android:overScrollMode="never" />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/selectlist_no_wifi"

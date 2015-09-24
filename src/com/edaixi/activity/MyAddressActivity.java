@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -87,7 +88,8 @@ public class MyAddressActivity extends BaseActivity implements OnClickListener {
 		addresslist_loading = (ImageView) findViewById(R.id.addresslist_loading);
 		mListDataSet = new MyAddressDataSet();
 		mListAdapter = new MyAddressListAdapter(getContext(), mListDataSet,
-				false, false, mHandler, mList);
+				false, false, mList);
+		mList.requestLayout();
 		mList.setAdapter(mListAdapter);
 		setflingbutton();
 		mList.setOnItemClickListener(new OnItemClickListener() {
@@ -108,6 +110,7 @@ public class MyAddressActivity extends BaseActivity implements OnClickListener {
 				startActivity(intent);
 			}
 		});
+		mList.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 		animationDrawable = (AnimationDrawable) addresslist_no_order
 				.getBackground();
 		if (!isHasNet()) {
@@ -216,6 +219,8 @@ public class MyAddressActivity extends BaseActivity implements OnClickListener {
 							e.printStackTrace();
 							return;
 						}
+						mActivity.mListDataSet.clear();
+						mListAdapter.notifyDataSetChanged();
 						for (AddressBean mBean : mMyAddressDataSet) {
 							mActivity.mListDataSet.addBean(mBean);
 						}
@@ -226,10 +231,13 @@ public class MyAddressActivity extends BaseActivity implements OnClickListener {
 							no_address_text.setVisibility(View.GONE);
 							iv_no_address_tips.setVisibility(View.GONE);
 						}
-						mListAdapter = new MyAddressListAdapter(getContext(),
-								mListDataSet, false, false, mHandler, mList);
-						mList.setAdapter(mListAdapter);
-						mListAdapter.notifyDataSetChanged();
+						MyAddressActivity.this.runOnUiThread(new Runnable() {
+
+							@Override
+							public void run() {
+								mListAdapter.notifyDataSetChanged();
+							}
+						});
 					}
 				} else {
 					return;

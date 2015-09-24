@@ -41,7 +41,7 @@
             android:layout_height="90dp"
             android:contentDescription="@null"
             android:scaleType="fitXY"
-            android:src="@drawable/banner" />
+            android:src="@drawable/banner_default" />
 
         <TextView
             android:id="@+id/yuee_text"

@@ -295,4 +295,23 @@
         </RelativeLayout>
     </ScrollView>
 
+    <FrameLayout
+        android:id="@+id/fl_order_cancle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:padding="15dp" >
+
+        <TextView
+            android:id="@+id/tv_cancle_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/cancle_order_btn_bg"
+            android:gravity="center"
+            android:text="取消订单"
+            android:textColor="@color/dark_blue" />
+    </FrameLayout>
+
 </RelativeLayout>

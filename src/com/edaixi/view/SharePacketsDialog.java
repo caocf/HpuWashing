@@ -90,8 +90,8 @@ public class SharePacketsDialog extends Dialog implements OnClickListener {
 		if (shareApp) {
 			share_tv_title.setText("分享给好友");
 		} else {
-			share_tv_title.setText("恭喜你获得" + share_coupon_total
-					+ "张优惠券 \n 分享至：");
+			share_tv_title.setText("恭喜您替朋友获得" + share_coupon_total
+					+ "张优惠券， \n 分享您也能得1张");
 		}
 		share_tv_cancle = (TextView) findViewById(R.id.share_tv_cancle);
 		share_tv_cancle.setOnClickListener(this);

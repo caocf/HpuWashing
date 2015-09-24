@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edaixi.activity.R;
@@ -21,8 +22,13 @@ public class CityAdapter extends ContactListAdapter {
 			int position) {
 		View infoView = parentView.findViewById(R.id.infoRowContainer);
 		TextView nicknameView = (TextView) infoView.findViewById(R.id.cityName);
-
+		ImageView itemSelectView = (ImageView) infoView
+				.findViewById(R.id.iv_city_item_select);
 		nicknameView.setText(item.getDisplayInfo());
+		if (item.getCitySelectInfo()) {
+			itemSelectView.setVisibility(View.VISIBLE);
+		} else {
+			itemSelectView.setVisibility(View.GONE);
+		}
 	}
-
 }

@@ -290,6 +290,7 @@ public class DepositActivity extends BaseActivity implements OnClickListener {
 		iv_recharge_ad = (ImageView) findViewById(R.id.iv_recharge_ad);
 		new LoadUrlImage().execute(rechargeAdsUrl);
 		initView();
+		AppConfig.getInstance().setCanRecharge(true);
 	}
 
 	@Override
@@ -457,12 +458,15 @@ public class DepositActivity extends BaseActivity implements OnClickListener {
 			if (!TextUtils.isEmpty(moneyString) && isFormatNum(moneyString)) {
 				rechage_cash = moneyString;
 			}
-			parm.clear();
-			parm.put("user_id", saveUtils.getStrSP(KeepingData.USER_ID));
-			parm.put("paytype", String.valueOf(method));
-			parm.put("fee", rechage_cash);
-			postdate(parm, Constants.geticardrecharge, handler,
-					ICRECHAERGESUCCED, ICRECHAERGEFAILD, false, true);
+			if (AppConfig.getInstance().isCanRecharge()) {
+				parm.clear();
+				parm.put("user_id", saveUtils.getStrSP(KeepingData.USER_ID));
+				parm.put("paytype", String.valueOf(method));
+				parm.put("fee", rechage_cash);
+				postdate(parm, Constants.geticardrecharge, handler,
+						ICRECHAERGESUCCED, ICRECHAERGEFAILD, false, true);
+			}
+			AppConfig.getInstance().setCanRecharge(false);
 			break;
 		default:
 			break;

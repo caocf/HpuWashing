@@ -5,7 +5,8 @@ import java.util.regex.Pattern;
 
 public class IsChinese {
 	public static boolean iszhongwen(String mobiles) {
-		String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+		//String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+		String regEx = "[`~#%^&*|{}\\[\\].<>/~ #%……&*——|{}]";
 		Pattern p = Pattern.compile(regEx);
 		Matcher m = p.matcher(mobiles);
 		if (m.find()) {

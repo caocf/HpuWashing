@@ -1,6 +1,7 @@
 package com.edaixi.activity;
 
 import java.io.InputStream;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ import com.edaixi.util.LogUtil;
 import com.edaixi.util.MyhttpUtils;
 import com.edaixi.util.PinYin;
 import com.edaixi.util.SaveUtils;
+import com.edaixi.util.TecentAdsUtil;
 import com.google.gson.Gson;
 
 @SuppressWarnings("deprecation")
@@ -89,7 +91,7 @@ public class AdsActivity extends BaseActivity implements AMapLocationListener,
 						JSONArray jsonArray = new JSONArray(data);
 						for (int i = 0; i < jsonArray.length(); i++) {
 							JSONObject jsonObject = (JSONObject) jsonArray
-									.opt(i);
+									.get(i);
 							// JSONObject jsonObject = new JSONObject(data);
 							bannerlistbean = new BannerlistBean();
 							bannerlistbean.setImage_url(jsonObject
@@ -100,6 +102,7 @@ public class AdsActivity extends BaseActivity implements AMapLocationListener,
 							bannerlistbean.setTitle(jsonObject
 									.getString("title"));
 						}
+
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -165,7 +168,7 @@ public class AdsActivity extends BaseActivity implements AMapLocationListener,
 			if (bannerlistbean != null) {
 				new LoadImage().execute(bannerlistbean.getImage_url());
 			} else {
-				picHandler.postDelayed(rightRunnable, 0);
+				picHandler.postDelayed(rightRunnable, 50);
 			}
 		}
 	};
@@ -194,6 +197,13 @@ public class AdsActivity extends BaseActivity implements AMapLocationListener,
 
 		getOpenPic();
 		picHandler.postDelayed(loadingRunnable, 2000);
+		saveUtils.saveBoolSP(KeepingData.is_Open_App, true);
+		TecentAdsUtil tecentAds = new TecentAdsUtil(this);
+		try {
+			tecentAds.getToTencentAds();
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -302,24 +312,9 @@ public class AdsActivity extends BaseActivity implements AMapLocationListener,
 			LogUtil.e("search_user_city" + search_user_city);
 			saveUtils.saveStrSP(KeepingData.City_Code,
 					aMapLocation.getCityCode());
-			int indexCity = formatAddress.indexOf("市");
-			int indexProvince = formatAddress.indexOf("省") + 1;
-			String user_city;
-			if ((indexProvince != -1) && (indexCity != -1)) {
-				user_city = formatAddress.substring(indexProvince, indexCity);
-			} else {
-				if (indexCity != -1) {
-					user_city = formatAddress.substring(0, indexCity);
-				} else {
-					user_city = "北京";
-				}
-			}
-			if (search_user_city == null || search_user_city == "") {
-				search_user_city = user_city;
-			}
-			saveUtils.saveStrSP(KeepingData.Current_City, search_user_city.replace("市", ""));
+			saveUtils.saveStrSP(KeepingData.Current_City,
+					search_user_city.replace("市", ""));
 			saveUtils.saveStrSP(KeepingData.Current_Area, search_user_area);
-			LogUtil.e("user_city-city" + user_city);
 			LogUtil.e("search_user_city" + search_user_city);
 			LogUtil.e("current-city"
 					+ saveUtils.getStrSP(KeepingData.Current_City));

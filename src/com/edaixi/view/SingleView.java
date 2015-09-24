@@ -20,6 +20,7 @@ public class SingleView extends RelativeLayout implements Checkable,
 	private ImageView iv_pay_type_logo;
 	private TextView pay_type_title;
 	private TextView pay_recharge_title;
+	private TextView pay_recharge_tips;
 	private CheckBox mCheckBox;
 
 	@SuppressLint("NewApi")
@@ -44,6 +45,7 @@ public class SingleView extends RelativeLayout implements Checkable,
 		iv_pay_type_logo = (ImageView) v.findViewById(R.id.iv_pay_type_logo);
 		pay_type_title = (TextView) v.findViewById(R.id.pay_type_title);
 		pay_recharge_title = (TextView) v.findViewById(R.id.pay_recharge_title);
+		pay_recharge_tips = (TextView) v.findViewById(R.id.pay_recharge_tips);
 		mCheckBox = (CheckBox) v.findViewById(R.id.checkbox);
 	}
 
@@ -83,7 +85,15 @@ public class SingleView extends RelativeLayout implements Checkable,
 		if (payTypeRechargeVisable) {
 			pay_recharge_title.setVisibility(View.VISIBLE);
 		} else {
-			pay_recharge_title.setVisibility(View.GONE);
+			pay_recharge_title.setVisibility(View.INVISIBLE);
+		}
+	}
+
+	public void setPayRechargeTips(Boolean payTypeRechargeTips) {
+		if (payTypeRechargeTips) {
+			pay_recharge_tips.setVisibility(View.VISIBLE);
+		} else {
+			pay_recharge_tips.setVisibility(View.INVISIBLE);
 		}
 	}
 

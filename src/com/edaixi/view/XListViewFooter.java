@@ -1,4 +1,12 @@
+/**
+ * @file XFooterView.java
+ * @create Mar 31, 2012 9:33:43 PM
+ * @author Maxwin
+ * @description XListView's footer
+ */
 package com.edaixi.view;
+
+import com.edaixi.activity.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,14 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.edaixi.activity.R;
 
-
-/**
- * xlistview footer,modify something for our app
- * 
- * @author wei-spring
- */
 public class XListViewFooter extends LinearLayout {
 	public final static int STATE_NORMAL = 0;
 	public final static int STATE_READY = 1;
@@ -36,17 +37,17 @@ public class XListViewFooter extends LinearLayout {
 	}
 
 	public void setState(int state) {
-		//mHintView.setVisibility(View.INVISIBLE);
-		// mProgressBar.setVisibility(View.INVISIBLE);
-		//mHintView.setVisibility(View.INVISIBLE);
+		mHintView.setVisibility(View.INVISIBLE);
+		mProgressBar.setVisibility(View.INVISIBLE);
+		mHintView.setVisibility(View.INVISIBLE);
 		if (state == STATE_READY) {
-			//mHintView.setVisibility(View.VISIBLE);
-			//mHintView.setText(R.string.xlistview_footer_hint_ready);
+			mHintView.setVisibility(View.VISIBLE);
+			mHintView.setText(R.string.xlistview_footer_hint_ready);
 		} else if (state == STATE_LOADING) {
-			// mProgressBar.setVisibility(View.VISIBLE);
+			mProgressBar.setVisibility(View.VISIBLE);
 		} else {
-			//mHintView.setVisibility(View.VISIBLE);
-			//mHintView.setText(R.string.xlistview_footer_hint_normal);
+			mHintView.setVisibility(View.VISIBLE);
+			mHintView.setText(R.string.xlistview_footer_hint_normal);
 		}
 	}
 
@@ -70,7 +71,7 @@ public class XListViewFooter extends LinearLayout {
 	 */
 	public void normal() {
 		mHintView.setVisibility(View.VISIBLE);
-		//mProgressBar.setVisibility(View.GONE);
+		mProgressBar.setVisibility(View.GONE);
 	}
 
 	/**
@@ -78,7 +79,7 @@ public class XListViewFooter extends LinearLayout {
 	 */
 	public void loading() {
 		mHintView.setVisibility(View.GONE);
-		// mProgressBar.setVisibility(View.VISIBLE);
+		mProgressBar.setVisibility(View.VISIBLE);
 	}
 
 	/**
@@ -110,20 +111,16 @@ public class XListViewFooter extends LinearLayout {
 				LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 
 		mContentView = moreView.findViewById(R.id.xlistview_footer_content);
-		// mProgressBar =
-		// moreView.findViewById(R.id.xlistview_footer_progressbar);
+		mProgressBar = moreView.findViewById(R.id.xlistview_footer_progressbar);
 		mHintView = (TextView) moreView
 				.findViewById(R.id.xlistview_footer_hint_textview);
 	}
 
 	public void noOrderTips() {
+		mContentView.setVisibility(View.GONE);
+		mProgressBar.setVisibility(View.GONE);
 		mHintView.setVisibility(View.VISIBLE);
-		mHintView.setText("无更多订单");
-	}
 
-	public void haveOrderTips() {
-		mHintView.setVisibility(View.VISIBLE);
-		mHintView.setText(" ");
 	}
 
 }

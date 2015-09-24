@@ -37,15 +37,15 @@ public class Constants {
 	// public final static String APP_IMG_URL =
 	// "http://open03.edaixi.cn/client/v2/";
 	// 测试环境图片V3
-	public final static String APP_IMG_URL = "http://open.edaixi.com/client/v3/";
 	// public final static String APP_IMG_URL =
-	// "http://open10.edaixi.cn:81/client/v3/";
+	// "http://open.edaixi.com/client/v3/";
+	public final static String APP_IMG_URL = "http://open.edaixi.com/client/v3/";
 	// public final static String APP_IMG_URL =
 	// "http://open05.edaixi.cn:81/client/v3/";
 	// 外部测试环境
-	public final static String APP_API_URL = "http://open.edaixi.com/client/v1/";
 	// public final static String APP_API_URL =
-	// "http://open10.edaixi.cn:81/client/v1/";
+	// "http://open.edaixi.com/client/v1/";
+	public final static String APP_API_URL = "http://open.edaixi.com/client/v1/";
 	// public final static String APP_API_URL =
 	// "http://open05.edaixi.cn:81/client/v1/";
 	// 测试环境
@@ -71,6 +71,9 @@ public class Constants {
 	public final static String getorder = APP_API_URL + "get_order?";
 	// 获取会员卡信息
 	public final static String geticard = APP_API_URL + "get_icard?";
+	// 获取卡信息
+	public final static String getextraaccount = APP_API_URL
+			+ "get_extra_accounts?";
 	// 获取订单衣物明细
 	public final static String getorderclothing = APP_API_URL
 			+ "order_clothing?";
@@ -148,6 +151,11 @@ public class Constants {
 	// 微信测试回调地址
 	// public static final String WECHAT_NOTIFY_URL =
 	// "http://payment03.edaixi.cn/payment/wechat_android_notify";
+	// 百度支付测试回调地址
+	// public static final String BAIDU_NOTIFY_URL =
+	// "http://payment03.edaixi.cn/payment/baidu_notify";
+	// 百度支付回调地址
+	public static final String BAIDU_NOTIFY_URL = "http://payment.edaixi.com/payment/baidu_notify";
 	// 获取banner地址
 	public static final String GET_BANNER_LIST = APP_IMG_URL
 			+ "get_banner_list?";

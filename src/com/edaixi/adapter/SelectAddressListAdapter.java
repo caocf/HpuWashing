@@ -70,6 +70,7 @@ public class SelectAddressListAdapter extends BasicAdapter {
 			}
 			mViewHolder.mDetailAdd.setTextColor(context.getResources()
 					.getColor(R.color.text_1));
+			if(mDataSet.getIndexBean(_position).getAddress() != null)
 			mViewHolder.mDetailAdd.setText(mDataSet.getIndexBean(_position)
 					.getCity()
 					+ mDataSet.getIndexBean(_position).getArea()

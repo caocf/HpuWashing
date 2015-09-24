@@ -73,8 +73,20 @@
     <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/ratingbar_bg</item>
         <item name="android:enabled">@drawable/ratingbar_enable</item>
-        <item name="android:minHeight">27.5dp</item>
-        <item name="android:maxHeight">27.5dp</item>
+        <item name="android:minHeight">45dp</item>
+        <item name="android:maxHeight">45dp</item>
+    </style>
+    
+     <style name="RongchainRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/rating_background</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:maxHeight">48dp</item>
+    </style>
+    
+     <style name="RongchainRatingBarSmall" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/rating_background_small</item>
+        <item name="android:minHeight">25dp</item>
+        <item name="android:maxHeight">25dp</item>
     </style>
 
     <style name="SuggestionPopupAnimation">

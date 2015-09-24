@@ -15,11 +15,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -57,7 +55,6 @@ import com.edaixi.view.MyViewPager.OnSingleTouchListener;
 import com.edaixi.view.TipsDialog;
 import com.google.gson.Gson;
 import com.lidroid.xutils.BitmapUtils;
-import com.tencent.mm.sdk.modelmsg.ShowMessageFromWX;
 import com.tendcloud.tenddata.TCAgent;
 
 @SuppressLint("HandlerLeak")
@@ -121,12 +118,12 @@ public class HomeFragment extends BaseFragment {
 				switch (msg.what) {
 				case GETBANNERSUCCED:
 					RequstFlag = true;
+					
 					HttpCommonBean jsonCommonBean = gson.fromJson(
 							(String) msg.obj, HttpCommonBean.class);
-					LogUtil.e("-111--"+msg.obj);
 					if (jsonCommonBean.isRet()) {
 						String data = jsonCommonBean.getData();
-						paserbaner(data, banerlistbak);
+						paserbaner(data, banerlistbak, "Top");
 						currentPosition = Integer.MAX_VALUE / 2
 								- (Integer.MAX_VALUE / 2 % banerlistbak.size());
 						removeAllPoint();
@@ -142,12 +139,12 @@ public class HomeFragment extends BaseFragment {
 					break;
 				case GETFUNCTIONBTNSUCCED:
 					RequstFlag = true;
-					LogUtil.e("-12221--"+msg.obj);
+					LogUtil.e("----------------222----------------------"+msg.obj);
 					HttpCommonBean CommonBean = gson.fromJson((String) msg.obj,
 							HttpCommonBean.class);
 					if (CommonBean.isRet()) {
 						String data = CommonBean.getData();
-						paserbaner(data, funditonlist);
+						paserbaner(data, funditonlist, "Bottom");
 					}
 					break;
 				case GETFUNCTIONBTNFAILD:
@@ -155,11 +152,12 @@ public class HomeFragment extends BaseFragment {
 					break;
 				case GETBANNERBUTTONSUCCED:
 					RequstFlag = true;
+					LogUtil.e("------------------3333--------------------"+msg.obj);
 					HttpCommonBean CommonBeanBtn = gson.fromJson(
 							(String) msg.obj, HttpCommonBean.class);
 					if (CommonBeanBtn.isRet()) {
 						String data = CommonBeanBtn.getData();
-						paserbaner(data, bannerbtnlist);
+						paserbaner(data, bannerbtnlist, "Middle");
 					}
 					break;
 				case GETBANNERBUTTONFAILD:
@@ -290,18 +288,33 @@ public class HomeFragment extends BaseFragment {
 		home_servesarea_text.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				TCAgent.onEvent(getActivity(), "首页_服务范围");
+				TCAgent.onEvent(getActivity(), "首页_服务介绍");
 				Intent intent = new Intent(getActivity(), WebActivity.class);
 				BannerlistBean bannerlistBean = new BannerlistBean();
-				bannerlistBean.setTitle("服务范围");
-				bannerlistBean.setUrl("http://edaixi.com/pages/service_area");
+				bannerlistBean.setTitle("服务介绍");
+				bannerlistBean.setUrl("http://edaixi.com/service?city="
+						+ saveUtils.getStrSP(KeepingData.User_City_Id));
 				intent.putExtra("bannerlistbean", bannerlistBean);
 				startActivity(intent);
 			}
 		});
-		if (!saveUtils.getBoolSP(KeepingData.is_Show_Home_Guide)) {
-			mHandler.postDelayed(rightRunnable, 0);
-			saveUtils.saveBoolSP(KeepingData.is_Show_Home_Guide, true);
+
+		if ((AppConfig.getInstance().isLocationFail() && !saveUtils
+				.getBoolSP(KeepingData.is_Show_Location_Guide))
+				|| (AppConfig.getInstance().isIsopendefaultcity() && !saveUtils
+						.getBoolSP(KeepingData.is_Show_Location_Guide))) {
+			if (saveUtils.getBoolSP(KeepingData.is_Open_App)) {
+				Intent intent = new Intent(getActivity(),
+						CityListActivity.class);
+				startActivityForResult(intent, Activity.RESULT_FIRST_USER);
+				saveUtils.saveBoolSP(KeepingData.is_Open_App, false);
+				saveUtils.saveBoolSP(KeepingData.is_Show_Location_Guide, true);
+			}
+		} else {
+			if (!saveUtils.getBoolSP(KeepingData.is_Show_Home_Guide)) {
+				mHandler.postDelayed(rightRunnable, 0);
+				saveUtils.saveBoolSP(KeepingData.is_Show_Home_Guide, true);
+			}
 		}
 	}
 
@@ -320,6 +333,10 @@ public class HomeFragment extends BaseFragment {
 		} else {
 			parms.put("city_id", "1");
 		}
+		if (saveUtils.getStrSP("user_id") != null
+				&& saveUtils.getStrSP("user_id") != "") {
+			parms.put("user_id", saveUtils.getStrSP("user_id"));
+		}
 		((MainActivity) getActivity()).getdate(parms,
 				Constants.GET_FUNC_BUTTON_LIST, handler, GETFUNCTIONBTNSUCCED,
 				GETFUNCTIONBTNFAILD, false, false, false);
@@ -335,6 +352,10 @@ public class HomeFragment extends BaseFragment {
 			parms.put("city_id", saveUtils.getStrSP(KeepingData.User_City_Id));
 		} else {
 			parms.put("city_id", "1");
+		}
+		if (saveUtils.getStrSP("user_id") != null
+				&& saveUtils.getStrSP("user_id") != "") {
+			parms.put("user_id", saveUtils.getStrSP("user_id"));
 		}
 		((MainActivity) getActivity())
 				.getdate(parms, Constants.GET_BANNER_BUTTON_LIST, handler,
@@ -352,6 +373,10 @@ public class HomeFragment extends BaseFragment {
 			parms.put("city_id", saveUtils.getStrSP(KeepingData.User_City_Id));
 		} else {
 			parms.put("city_id", "1");
+		}
+		if (saveUtils.getStrSP("user_id") != null
+				&& saveUtils.getStrSP("user_id") != "") {
+			parms.put("user_id", saveUtils.getStrSP("user_id"));
 		}
 		((MainActivity) getActivity()).getdate(parms,
 				Constants.GET_BANNER_LIST, handler, GETBANNERSUCCED,
@@ -466,7 +491,8 @@ public class HomeFragment extends BaseFragment {
 	}
 
 	/** 解析banner结果方法 **/
-	protected void paserbaner(String json, ArrayList<BannerlistBean> bannerlist) {
+	protected void paserbaner(String json,
+			ArrayList<BannerlistBean> bannerlist, String locationStr) {
 		JSONArray jsonArray;
 		bannerlist.clear();
 		try {
@@ -485,8 +511,20 @@ public class HomeFragment extends BaseFragment {
 				}
 				bannerlist.add(bannerlistbean);
 			}
-			topAdapter.notifyDataSetChanged();
-			bottomAdapter.notifyDataSetChanged();
+			switch (locationStr) {
+			case "Top":
+				title.mbannerlist = banerlistbak;
+				title.notifyDataSetChanged();
+				break;
+			case "Middle":
+				topAdapter.mfunditonlist = bannerbtnlist;
+				topAdapter.notifyDataSetChanged();
+				break;
+			case "Bottom":
+				bottomAdapter.mfunditonlist = funditonlist;
+				bottomAdapter.notifyDataSetChanged();
+				break;
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -569,6 +607,10 @@ public class HomeFragment extends BaseFragment {
 										"");
 								saveUtils.saveStrSP(
 										KeepingData.USER_City_Id_New, "");
+								saveUtils.saveStrSP(
+										KeepingData.select_City_Item, "");
+								saveUtils.saveBoolSP(
+										KeepingData.is_Select_City_Item, false);
 								get_banner_list();
 								get_func_button_list();
 								get_banner_button_list();
@@ -599,6 +641,10 @@ public class HomeFragment extends BaseFragment {
 			get_banner_list();
 			get_func_button_list();
 			get_banner_button_list();
+		}
+		if(saveUtils.getBoolSP(KeepingData.is_Show_Location_Guide) && !saveUtils.getBoolSP(KeepingData.is_Show_Home_Guide)){
+			mHandler.postDelayed(rightRunnable, 500);
+			saveUtils.saveBoolSP(KeepingData.is_Show_Home_Guide, true);
 		}
 	}
 }

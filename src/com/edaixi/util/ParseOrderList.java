@@ -67,11 +67,14 @@ public class ParseOrderList {
 							.getString("order_status_text"));
 					DecimalFormat df = new DecimalFormat("0.00");
 					double d1 = Double.parseDouble(jo.getString("order_price"));
+					double d2 = Double.parseDouble(jo.getString("yingfu"));
 					oItembean.setOrder_price(df.format(d1));
+					oItembean.setYingfu(df.format(d2));
 					oItembean.setCoupon_sn(jo.getString("coupon_sn"));
 					oItembean.setPay_status(jo.getString("pay_status"));
 					oItembean.setCoupon_paid(jo.getString("coupon_paid"));
 					if (jo.getString("can_be_commented").equals("1")) {
+						oItembean.setTotal_score(jo.getInt("total_score") + "");
 						oItembean.setWashing_score(jo.getInt("washing_score")
 								+ "");
 						oItembean.setLogistics_score(jo
@@ -103,6 +106,22 @@ public class ParseOrderList {
 					if (jo.has("share_image_url")) {
 						oItembean.setShare_image_url(jo
 								.getString("share_image_url"));
+					}
+					if (jo.has("courier_name_qu")) {
+						oItembean.setCourier_name_qu(jo
+								.getString("courier_name_qu"));
+					}
+					if (jo.has("courier_phone_qu")) {
+						oItembean.setCourier_phone_qu(jo
+								.getString("courier_phone_qu"));
+					}
+					if (jo.has("courier_name_song")) {
+						oItembean.setCourier_name_song(jo
+								.getString("courier_name_song"));
+					}
+					if (jo.has("courier_phone_song")) {
+						oItembean.setCourier_phone_song(jo
+								.getString("courier_phone_song"));
 					}
 					parseOrderListRes.add(oItembean);
 				}

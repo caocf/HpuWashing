@@ -26,6 +26,9 @@ public class CouponEntity implements Serializable {
 	private String mCouponEndTime;
 	private String coupon_title;
 	private String coupon_time_display;
+	private String category_id;
+	private String category_display;
+	private String coupon_endtime;
 	private int mCouponLeastPrice;
 	private boolean mValid;
 
@@ -42,7 +45,34 @@ public class CouponEntity implements Serializable {
 		exclusive_channels = mBean.getExclusive_channels();
 		exclusive_channels_display = mBean.getExclusive_channels_display();
 		coupon_time_display = mBean.getCoupon_time_display();
+		category_id = mBean.getCategory_id();
+		category_display = mBean.getCategory_display();
+		coupon_endtime = mBean.getCoupon_endtime();
 		mValid = true;
+	}
+
+	public String getCoupon_endtime() {
+		return coupon_endtime;
+	}
+
+	public void setCoupon_endtime(String coupon_endtime) {
+		this.coupon_endtime = coupon_endtime;
+	}
+
+	public String getCategory_id() {
+		return category_id;
+	}
+
+	public void setCategory_id(String category_id) {
+		this.category_id = category_id;
+	}
+
+	public String getCategory_display() {
+		return category_display;
+	}
+
+	public void setCategory_display(String category_display) {
+		this.category_display = category_display;
 	}
 
 	public String getCoupon_time_display() {
@@ -191,7 +221,11 @@ public class CouponEntity implements Serializable {
 				+ ", exclusive_channels_display=" + exclusive_channels_display
 				+ ", mCouponEndTime=" + mCouponEndTime + ", coupon_title="
 				+ coupon_title + ", coupon_time_display=" + coupon_time_display
+				+ ", category_id=" + category_id + ", category_display="
+				+ category_display + ", coupon_endtime=" + coupon_endtime
 				+ ", mCouponLeastPrice=" + mCouponLeastPrice + ", mValid="
-				+ mValid + "]";
+				+ mValid +getDesStr()+"]";
 	}
+
+	
 }

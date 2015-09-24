@@ -32,6 +32,16 @@
             android:text="广州"
             android:textColor="#3E3E3E"
             android:textSize="17sp" />
+        
+        <ImageView 
+            android:id="@+id/iv_city_item_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:visibility="gone"
+            android:paddingRight="25dp"
+            android:src="@drawable/city_select"
+            />
     </RelativeLayout>
 
 </LinearLayout>

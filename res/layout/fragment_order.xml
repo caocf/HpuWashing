@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff" >
+    android:background="@color/white" >
 
     <RadioGroup
         android:id="@+id/order_radiogroup"
@@ -36,13 +36,23 @@
     <com.edaixi.view.XListView
         android:id="@+id/order_xListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/order_radiogroup"
         android:cacheColorHint="#00000000"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:visibility="invisible" >
     </com.edaixi.view.XListView>
+
+    <TextView
+        android:id="@+id/tv_order_fragment_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/order_xListView"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="没有更多订单了"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/iv_no_order"

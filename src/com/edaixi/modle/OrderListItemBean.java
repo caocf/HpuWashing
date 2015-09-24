@@ -31,6 +31,42 @@ public class OrderListItemBean implements Serializable {
 	private String washing_time;
 	private String washing_date;
 	private String category_id;
+	private String courier_name_qu;
+	private String courier_phone_qu;
+	private String courier_name_song;
+	private String courier_phone_song;
+
+	public String getCourier_name_qu() {
+		return courier_name_qu;
+	}
+
+	public void setCourier_name_qu(String courier_name_qu) {
+		this.courier_name_qu = courier_name_qu;
+	}
+
+	public String getCourier_phone_qu() {
+		return courier_phone_qu;
+	}
+
+	public void setCourier_phone_qu(String courier_phone_qu) {
+		this.courier_phone_qu = courier_phone_qu;
+	}
+
+	public String getCourier_name_song() {
+		return courier_name_song;
+	}
+
+	public void setCourier_name_song(String courier_name_song) {
+		this.courier_name_song = courier_name_song;
+	}
+
+	public String getCourier_phone_song() {
+		return courier_phone_song;
+	}
+
+	public void setCourier_phone_song(String courier_phone_song) {
+		this.courier_phone_song = courier_phone_song;
+	}
 
 	public String getCategory_id() {
 		return category_id;

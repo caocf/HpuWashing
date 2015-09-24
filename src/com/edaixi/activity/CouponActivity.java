@@ -35,12 +35,12 @@ import com.edaixi.util.LogUtil;
 import com.edaixi.util.OrderListAdapterEvent;
 import com.edaixi.util.SaveUtils;
 import com.edaixi.view.CouponExchangeDialog;
+import com.edaixi.view.CouponExchangeDialog.ExchangeDialogButtonListener;
 import com.edaixi.view.ListViewWithNoScrollbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tendcloud.tenddata.TCAgent;
 import com.umeng.analytics.MobclickAgent;
-
 import de.greenrobot.event.EventBus;
 
 /**
@@ -70,6 +70,7 @@ public class CouponActivity extends BaseActivity {
 	private String mCard;
 	private CouponExchangeDialog exchange_dialog;
 	private String order_IdString;
+	private String category_IdString;
 
 	@Override
 	protected void onCreate(Bundle args) {
@@ -85,6 +86,7 @@ public class CouponActivity extends BaseActivity {
 		Bundle mBundle = getIntent().getExtras();
 		if (mBundle != null) {
 			order_IdString = mBundle.getString("Order_Id");
+			category_IdString = mBundle.getString("Category_Id");
 			mType = (UseConponType) mBundle.getSerializable("TYPE");
 			switch (mType) {
 			case CHECK:
@@ -101,6 +103,8 @@ public class CouponActivity extends BaseActivity {
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 		findViewById(R.id.activity_coupon_exchange).setOnClickListener(
+				mCommonListener);
+		findViewById(R.id.ll_coupon_exchange).setOnClickListener(
 				mCommonListener);
 		no_coupon_img = (ImageView) findViewById(R.id.no_coupon_img);
 		no_userable_coupon = (TextView) findViewById(R.id.no_userable_coupon);
@@ -178,12 +182,22 @@ public class CouponActivity extends BaseActivity {
 				onBackKeyDown();
 				break;
 			/* 兑换按钮 */
+			case R.id.ll_coupon_exchange:
 			case R.id.activity_coupon_exchange:
 				TCAgent.onEvent(CouponActivity.this, "兑换优惠券");
 				exchange_dialog = new CouponExchangeDialog(CouponActivity.this,
 						R.style.customdialog_style,
 						R.layout.coupon_exchange_dialog);
 				exchange_dialog.show();
+				exchange_dialog
+						.setYourListener(new ExchangeDialogButtonListener() {
+
+							@Override
+							public void setExchangeCoupon(String couponCode) {
+								mCard = couponCode;
+								getcouponlist();
+							}
+						});
 				break;
 			default:
 				break;
@@ -228,6 +242,7 @@ public class CouponActivity extends BaseActivity {
 			}
 			switch (msg.what) {
 			case REFRESH_CORRECT_CODE: {
+				LogUtil.e("---获取优惠券信息成功--" + msg.obj);
 				Type contentType = new TypeToken<GetCouponsBean>() {
 				}.getType();
 				GetCouponsBean mInfo = null;
@@ -272,24 +287,25 @@ public class CouponActivity extends BaseActivity {
 								.setDataSetValid(mActivity.mMoney);
 					}
 					mListAdapter = null;
+					if (category_IdString != null) {
+						CouponsDataSet mNewListDataSet = judgeCouponData(mListDataSet);
+						mListDataSet = mNewListDataSet;
+					}
 					mListAdapter = new CouponActivityListAdapter(
 							CouponActivity.this, mListDataSet);
 					mListView.setAdapter(mListAdapter);
-					// mActivity.mListAdapter.notifyDataSetInvalidated();
-
 				} else {
 					showdialog("数据错误");
 				}
 				break;
 			}
 			case REFRESH_ERROR_CODE:
+				showdialog("数据错误");
 				break;
 			case EXCHANGE_CORRECT_CODE: {
 				Type contentType = new TypeToken<BindCouponBean>() {
 				}.getType();
 				BindCouponBean mBean = null;
-				LogUtil.e("------hahahhahahhahahha--xixiix-0000--"
-						+ msg.obj.toString());
 				try {
 					mBean = mActivity.mGson.fromJson((String) msg.obj,
 							contentType);
@@ -320,8 +336,6 @@ public class CouponActivity extends BaseActivity {
 				Type contentType = new TypeToken<BindCouponBean>() {
 				}.getType();
 				BindCouponBean mBean = null;
-				LogUtil.e("------hahahhahahhahahha--xixiix--111-"
-						+ msg.obj.toString());
 				try {
 					mBean = mActivity.mGson.fromJson((String) msg.obj,
 							contentType);
@@ -346,16 +360,40 @@ public class CouponActivity extends BaseActivity {
 				EXCHANGE_CORRECT_CODE, EXCHANGE_ERROR_CODE, false, true);
 	}
 
+	// 处理优惠券数据，重新排列优惠券顺序和是否可用
+	public CouponsDataSet judgeCouponData(CouponsDataSet mListDataSet) {
+		LogUtil.e("订单类型--+" + category_IdString);
+		CouponsDataSet allCouponsDataSet = new CouponsDataSet();
+		CouponsDataSet availableCouponsDataSet = new CouponsDataSet();
+		CouponsDataSet unavailableCouponsDataSet = new CouponsDataSet();
+		for (int i = 0; i < mListDataSet.size(); i++) {
+			LogUtil.e("优惠券类型--+"
+					+ (mListDataSet.getIndexBean(i).getCategory_id()));
+			if ((mListDataSet.getIndexBean(i).isValid())
+					&& ((mListDataSet.getIndexBean(i).getCategory_id()
+							.equals(category_IdString))
+							|| mListDataSet.getIndexBean(i).getCategory_id()
+									.equals("0"))) {
+				availableCouponsDataSet.addBean(mListDataSet.getIndexBean(i));
+			} else {
+				mListDataSet.getIndexBean(i).setValid(-1);
+				unavailableCouponsDataSet.addBean(mListDataSet.getIndexBean(i));
+			}
+		}
+		for (int i = 0; i < availableCouponsDataSet.size(); i++) {
+			allCouponsDataSet.addBean(availableCouponsDataSet.getIndexBean(i));
+		}
+		for (int i = 0; i < unavailableCouponsDataSet.size(); i++) {
+			allCouponsDataSet
+					.addBean(unavailableCouponsDataSet.getIndexBean(i));
+		}
+		return allCouponsDataSet;
+	}
+
 	public void onEvent(OrderListAdapterEvent event) {
 		switch (event.getText()) {
-		case "ExchangeCoupon":
-			if (exchange_dialog != null) {
-				mCard = exchange_dialog.getExchngeCode();
-				getcouponlist();
-			}
-			break;
 		case "HidenExchangeCouponInput":
-			// invisibleInputmethod(coupon_info_btn);
+			invisibleInputmethod(coupon_info_btn);
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 			break;
@@ -363,5 +401,4 @@ public class CouponActivity extends BaseActivity {
 			break;
 		}
 	}
-
 }

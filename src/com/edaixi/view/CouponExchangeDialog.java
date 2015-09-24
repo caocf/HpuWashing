@@ -2,6 +2,7 @@ package com.edaixi.view;
 
 import com.edaixi.activity.R;
 import com.edaixi.util.OrderListAdapterEvent;
+import com.edaixi.view.CancleOrderDialog.CancleDialogButtonListener;
 
 import de.greenrobot.event.EventBus;
 import android.app.Dialog;
@@ -11,6 +12,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,6 +63,27 @@ public class CouponExchangeDialog extends Dialog implements
 		this.layoutRes = resLayout;
 	}
 
+	/**
+	 * 自定义取消订单Dialog监听器
+	 */
+	public interface ExchangeDialogButtonListener {
+		/**
+		 * 回调函数，用于在Dialog的监听事件触发后刷新Activity的UI显示
+		 */
+		public void setExchangeCoupon(String couponCode);
+	}
+
+	private ExchangeDialogButtonListener exchangeBtnListener;
+
+	/**
+	 * 带监听器参数的构造函数
+	 */
+
+	// 设置回调接口(监听器)的方法
+	public void setYourListener(ExchangeDialogButtonListener exchangeBtnListener) {
+		this.exchangeBtnListener = exchangeBtnListener;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -113,14 +136,15 @@ public class CouponExchangeDialog extends Dialog implements
 				tv_tips.setVisibility(View.VISIBLE);
 				return;
 			}
-			EventBus.getDefault().post(
-					new OrderListAdapterEvent("ExchangeCoupon"));
+			exchangeBtnListener.setExchangeCoupon(getExchngeCode());
 			this.cancel();
 			break;
 		case R.id.exchange_coupon_cancel_btn:
+			InputMethodManager imm = (InputMethodManager) context
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(exchange_coupon_code.getWindowToken(),
+					0);
 			this.cancel();
-			EventBus.getDefault().post(
-					new OrderListAdapterEvent("HidenExchangeCouponInput"));
 			break;
 		}
 	}

@@ -27,7 +27,7 @@ public class Myfuncadpter extends BaseAdapter {
 
 	private Viewholer holder;
 	private Context mcontext;
-	private ArrayList<BannerlistBean> mfunditonlist;
+	public ArrayList<BannerlistBean> mfunditonlist;
 	private boolean isMiddle;
 
 	public Myfuncadpter(Context context,

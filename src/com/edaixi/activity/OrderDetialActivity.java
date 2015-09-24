@@ -3,8 +3,10 @@ package com.edaixi.activity;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,19 +17,29 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.edaixi.adapter.DeliveryListAdapter;
+import com.edaixi.data.AppConfig;
 import com.edaixi.modle.OrderDeliveryInfo;
 import com.edaixi.modle.OrderListItemBean;
 import com.edaixi.util.Constants;
+import com.edaixi.util.LogUtil;
+import com.edaixi.util.OrderListAdapterEvent;
 import com.edaixi.util.ParseOrderList;
 import com.edaixi.util.SaveUtils;
+import com.edaixi.view.CancleOrderDialog;
+import com.edaixi.view.CancleOrderDialog.CancleDialogButtonListener;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.tendcloud.tenddata.TCAgent;
 import com.umeng.analytics.MobclickAgent;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * order detail activity....
@@ -41,9 +53,9 @@ public class OrderDetialActivity extends BaseActivity {
 	public static final int ERRORMESSAGEORDER = 9;
 	public static final int TUREMESSAGEDELIVERY = 10;
 	public static final int ERRORMESSAGEDELIVERY = 11;
+	public static final int TRUEMESSAGECANCLEORDER = 12;
+	public static final int FALSEMESSAGECANCLEORDER = 13;
 	private OrderListItemBean orderListItembean;
-	@SuppressWarnings("unused")
-	private OrderListItemBean orderItemInfo;
 	private HashMap<String, String> orderParams = new HashMap<String, String>();
 	private HashMap<String, String> orderDeliveryParams = new HashMap<String, String>();
 	public SaveUtils saveUtils;
@@ -53,6 +65,8 @@ public class OrderDetialActivity extends BaseActivity {
 	private ImageView activity_orderdetail_back_btn;
 	@ViewInject(R.id.show_clothing_detail_btn)
 	private Button show_clothing_detail_btn;
+	@ViewInject(R.id.tv_cancle_order)
+	private TextView tv_cancle_order;
 	@ViewInject(R.id.order_detail_id_text)
 	private TextView order_detail_id_text;
 	@ViewInject(R.id.order_id_title)
@@ -89,6 +103,8 @@ public class OrderDetialActivity extends BaseActivity {
 	private ImageView iv_line_0;
 	@ViewInject(R.id.iv_line_1)
 	private ImageView iv_line_1;
+	@ViewInject(R.id.fl_order_cancle)
+	private FrameLayout fl_order_cancle;
 
 	@Override
 	protected boolean onBackKeyDown() {
@@ -153,6 +169,36 @@ public class OrderDetialActivity extends BaseActivity {
 				break;
 			case 11:
 				break;
+			case 12:
+				String removeResultSucess = (String) msg.obj;
+				LogUtil.e("删除订单成功" + msg.obj);
+				JSONObject jsonObject;
+				try {
+					jsonObject = new JSONObject(msg.obj.toString());
+					if (removeResultSucess != null
+							&& jsonObject.getBoolean("ret")) {
+						showdialog("订单已取消");
+
+						new Handler().postDelayed(new Runnable() {
+							public void run() {
+								EventBus.getDefault().post(
+										new OrderListAdapterEvent(
+												"ShanChuDingDan"));
+								finish();
+							}
+						}, 2500);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				break;
+			case 13:
+				String removeResultFail = (String) msg.obj;
+				LogUtil.e("删除订单失败" + msg.obj);
+				if (removeResultFail != null) {
+					showdialog("删除订单失败，稍后重试");
+				}
+				break;
 			}
 		};
 	};
@@ -163,6 +209,7 @@ public class OrderDetialActivity extends BaseActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_orderdetail);
 		ViewUtils.inject(this);
+		EventBus.getDefault().register(this);
 
 		init(this);
 		saveUtils = new SaveUtils(getApplicationContext());
@@ -193,25 +240,59 @@ public class OrderDetialActivity extends BaseActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				TCAgent.onEvent(OrderDetialActivity.this,"物流电话拨出");
+				TCAgent.onEvent(OrderDetialActivity.this, "物流电话拨出");
 			}
 		});
 		lv_show_delivery.setFocusable(false);
+		if (orderListItembean.getCan_be_canceled() != null
+				&& orderListItembean.getCan_be_canceled().equals("true")) {
+			fl_order_cancle.setVisibility(View.VISIBLE);
+			tv_cancle_order.setVisibility(View.VISIBLE);
+			tv_cancle_order.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					TCAgent.onEvent(OrderDetialActivity.this, "取消订单");
+					if (isHasNet()) {
+						CancleOrderDialog cuDialog = new CancleOrderDialog(
+								OrderDetialActivity.this,
+								R.style.customdialog_style,
+								R.layout.cancle_order_dialog, orderListItembean);
+						cuDialog.show();
+						cuDialog.setYourListener(new CancleDialogButtonListener() {
+
+							@Override
+							public void isCancleOrder(boolean isCancle) {
+								if (isCancle) {
+									getCancleOrder();
+								}
+							}
+						});
+					} else {
+						showdialog("网络不可用，请检查您的网络连接");
+						EventBus.getDefault()
+								.post(new OrderListAdapterEvent(
+										"NoNetQuXiaoDingDan"));
+					}
+				}
+			});
+		} else {
+			fl_order_cancle.setVisibility(View.GONE);
+			tv_cancle_order.setVisibility(View.GONE);
+		}
 	}
 
 	public void onResume() {
 		super.onResume();
 		TCAgent.onResume(this);
-		MobclickAgent.onPageStart("OrderDetialActivity"); // 统计页面
-		MobclickAgent.onResume(this); // 统计时长
+		MobclickAgent.onPageStart("OrderDetialActivity");
+		MobclickAgent.onResume(this);
 	}
 
 	public void onPause() {
 		super.onPause();
 		TCAgent.onPause(this);
-		MobclickAgent.onPageEnd("OrderDetialActivity"); // 保证 onPageEnd 在onPause
-														// 之前调用,因为 onPause
-														// 中会保存信息
+		MobclickAgent.onPageEnd("OrderDetialActivity");
 		MobclickAgent.onPause(this);
 	}
 
@@ -225,7 +306,6 @@ public class OrderDetialActivity extends BaseActivity {
 	 * @return
 	 */
 	public boolean isShowClothingDetail() {
-
 		return true;
 	}
 
@@ -253,5 +333,32 @@ public class OrderDetialActivity extends BaseActivity {
 		this.getdate(orderDeliveryParams, Constants.getorderdeliverystatuslist,
 				handler, TUREMESSAGEDELIVERY, ERRORMESSAGEDELIVERY, true, true,
 				false);
+	}
+
+	/**
+	 * get order delivery information
+	 */
+	public void getCancleOrder() {
+		orderDeliveryParams.clear();
+		if (saveUtils.getStrSP("user_id") != null) {
+			orderDeliveryParams.put("user_id", saveUtils.getStrSP("user_id"));
+		}
+		if (AppConfig.getInstance().getCancleOrderString() != null) {
+			orderDeliveryParams.put("reason", AppConfig.getInstance()
+					.getCancleOrderString());
+		}
+		orderDeliveryParams.put("order_id", orderListItembean.getOrder_id());
+		this.postdate(orderDeliveryParams, Constants.getcancelorder, handler,
+				TRUEMESSAGECANCLEORDER, FALSEMESSAGECANCLEORDER, true, false);
+	}
+
+	/**
+	 * get order id from order item by event bus
+	 */
+	public void onEvent(OrderListAdapterEvent event) {
+		switch (event.getText()) {
+		default:
+			break;
+		}
 	}
 }

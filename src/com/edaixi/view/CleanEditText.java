@@ -65,6 +65,11 @@ public class CleanEditText extends EditText {
 		setCompoundDrawables(this.dLeft, null, null, null);
 	}
 
+	/** 获取焦点，显示清除按钮 **/
+	public void showCleanLogo() {
+		setCompoundDrawables(this.dLeft, null, this.dRight, null);
+	}
+
 	@Override
 	protected void onDetachedFromWindow() {
 		super.onDetachedFromWindow();

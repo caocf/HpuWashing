@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="30dp" >
+    android:layout_height="wrap_content"
+    android:background="@color/white" >
 
     <RelativeLayout
         android:id="@+id/xlistview_footer_content"
@@ -20,9 +21,17 @@
             android:id="@+id/xlistview_footer_hint_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
             android:layout_centerInParent="true"
-            android:text="" />
+            android:text=""
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/xlistview_footer_hint_order_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="没有更多订单了"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </LinearLayout>

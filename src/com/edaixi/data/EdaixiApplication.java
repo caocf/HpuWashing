@@ -2,6 +2,7 @@ package com.edaixi.data;
 
 import android.app.Application;
 import android.content.Context;
+import cn.shuzilm.core.Main;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVOSCloud;
@@ -33,6 +34,7 @@ public class EdaixiApplication extends Application {
 		if (mInstance == null) {
 			mInstance = this;
 		}
+		 Main.go(this, "YiYongHui", null);
 		// avoscloud 测试id ,key
 		// AVOSCloud.initialize(this,
 		// "bi2vv14al3bxwdqu5xmaamuy94ru3b3cjuitj4y8rnc6khx1",
@@ -43,6 +45,7 @@ public class EdaixiApplication extends Application {
 		AVOSCloud.useAVCloudCN();
 		initPush();
 		com.tendcloud.tenddata.TCAgent.init(getApplicationContext());
+		TCAgent.setReportUncaughtExceptions(false);
 		TalkingDataAppCpa.init(this.getApplicationContext(),
 				"277bdedbcce4457eae9da083f24c3e22", "GooglePlay");
 	}
@@ -92,10 +95,10 @@ public class EdaixiApplication extends Application {
 								.saveInBackground();
 						if (e == null) {
 							// 保存成功
-							 String installationId = AVInstallation
-							 .getCurrentInstallation()
-							 .getInstallationId();
-							 LogUtil.e("avoles------id"+installationId);
+							String installationId = AVInstallation
+									.getCurrentInstallation()
+									.getInstallationId();
+							LogUtil.e("avoles------id" + installationId);
 							// 关联 installationId 到用户表等操作……
 						} else {
 							// 保存失败，输出错误信息
