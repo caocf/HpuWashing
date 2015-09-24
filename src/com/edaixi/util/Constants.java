@@ -39,13 +39,13 @@ public class Constants {
 	// 测试环境图片V3
 	// public final static String APP_IMG_URL =
 	// "http://open.edaixi.com/client/v3/";
-	public final static String APP_IMG_URL = "http://open.edaixi.com/client/v3/";
+	public final static String APP_IMG_URL = "http://open01.edaixi.cn/client/v3/";
 	// public final static String APP_IMG_URL =
 	// "http://open05.edaixi.cn:81/client/v3/";
 	// 外部测试环境
 	// public final static String APP_API_URL =
 	// "http://open.edaixi.com/client/v1/";
-	public final static String APP_API_URL = "http://open.edaixi.com/client/v1/";
+	public final static String APP_API_URL = "http://open01.edaixi.cn/client/v1/";
 	// public final static String APP_API_URL =
 	// "http://open05.edaixi.cn:81/client/v1/";
 	// 测试环境
@@ -140,14 +140,14 @@ public class Constants {
 	// public static final String ALIPAY_NOTIFY_URL =
 	// "http://wx.rongchain.com/payment/alipay/notify_url.php";
 	// 支付宝新线上回调地址
-	public static final String ALIPAY_NOTIFY_URL = "http://payment.edaixi.com/payment/ali_app_notify";
+	public static final String ALIPAY_NOTIFY_URL = "http://payment01.edaixi.cn/payment/ali_app_notify";
 	// public static final String ALIPAY_NOTIFY_URL =
 	// "http://wx01.edaixi.cn/payment/alipay/notify_url.php";
 	// 微信回调地址
 	// public static final String WECHAT_NOTIFY_URL =
 	// "http://wx.rongchain.com/payment/wechat/open_notify_android.php";
 	// 微信新回调地址
-	public static final String WECHAT_NOTIFY_URL = "http://payment.edaixi.com/payment/wechat_android_notify";
+	public static final String WECHAT_NOTIFY_URL = "http://payment01.edaixi.cn/payment/wechat_android_notify";
 	// 微信测试回调地址
 	// public static final String WECHAT_NOTIFY_URL =
 	// "http://payment03.edaixi.cn/payment/wechat_android_notify";
@@ -155,7 +155,7 @@ public class Constants {
 	// public static final String BAIDU_NOTIFY_URL =
 	// "http://payment03.edaixi.cn/payment/baidu_notify";
 	// 百度支付回调地址
-	public static final String BAIDU_NOTIFY_URL = "http://payment.edaixi.com/payment/baidu_notify";
+	public static final String BAIDU_NOTIFY_URL = "http://payment01.edaixi.cn/payment/baidu_notify";
 	// 获取banner地址
 	public static final String GET_BANNER_LIST = APP_IMG_URL
 			+ "get_banner_list?";

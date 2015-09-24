@@ -381,7 +381,7 @@ public class OrderListItemBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "OrderListItembean [order_id=" + order_id + ", order_sn="
+		return "OrderListItemBean [order_id=" + order_id + ", order_sn="
 				+ order_sn + ", order_created_at=" + order_created_at
 				+ ", order_price=" + order_price + ", order_status="
 				+ order_status + ", order_status_text=" + order_status_text
@@ -396,11 +396,20 @@ public class OrderListItemBean implements Serializable {
 				+ ", yingfu=" + yingfu + ", has_clothes_detail="
 				+ has_clothes_detail + ", good=" + good + ", applogo="
 				+ applogo + ", total_score=" + total_score + ", washing_score="
-				+ washing_score + ", logistics_score=" + logistics_score
-				+ ", service_score=" + service_score + ", order_comments="
-				+ order_comments + ", can_be_commented=" + can_be_commented
+				+ washing_score + ", washing_time=" + washing_time
+				+ ", washing_date=" + washing_date + ", category_id="
+				+ category_id + ", courier_name_qu=" + courier_name_qu
+				+ ", courier_phone_qu=" + courier_phone_qu
+				+ ", courier_name_song=" + courier_name_song
+				+ ", courier_phone_song=" + courier_phone_song
+				+ ", logistics_score=" + logistics_score + ", service_score="
+				+ service_score + ", order_comments=" + order_comments
+				+ ", can_be_commented=" + can_be_commented
 				+ ", exclusive_channels=" + exclusive_channels
-				+ ", order_can_share=" + order_can_share + "]";
+				+ ", order_can_share=" + order_can_share + ", share_url="
+				+ share_url + ", share_title=" + share_title
+				+ ", share_content=" + share_content + ", share_image_url="
+				+ share_image_url + "]";
 	}
 
 }

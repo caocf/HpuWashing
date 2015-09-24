@@ -119,7 +119,6 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			case 1:
-				LogUtil.e("--" + msg.obj);
 				String servingResultSucess = (String) msg.obj;
 				if (servingResultSucess != null) {
 					servingOrderList = new ArrayList<OrderListItemBean>();
@@ -223,7 +222,6 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 				}
 				break;
 			case 2:
-				LogUtil.e("-2-" + msg.obj);
 				break;
 			case 3:
 				String completedResultScuess = (String) msg.obj;
@@ -268,6 +266,8 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 										orderDetail.setClass(mActivity,
 												OrderDetialActivity.class);
 										Bundle bundle = new Bundle();
+										bundle.putString("OrderFlagData",
+												"COMPLETED");
 										if (position > 0) {
 											bundle.putSerializable(
 													"OrderListItembean",
@@ -290,7 +290,6 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 				break;
 			case 7:
 				String loadMoreResultSucess = (String) msg.obj;
-				LogUtil.e("-2-" + msg.obj);
 				if (loadMoreResultSucess != null) {
 					ArrayList<OrderListItemBean> loadMoreServing = parseOrderList
 							.parseOrderList(loadMoreResultSucess.toString());
@@ -321,7 +320,6 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 				break;
 			case 9:
 				String loadCompletedSucess = (String) msg.obj;
-				LogUtil.e("-more compted--" + msg.obj);
 				if (loadCompletedSucess != null) {
 					tv_order_fragment_tips.setVisibility(View.GONE);
 					ArrayList<OrderListItemBean> loadMoreCompleted = parseOrderList
@@ -623,19 +621,7 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 		});
 		serving_btn = (RadioButton) view.findViewById(R.id.serving_btn);
 		completed_btn = (RadioButton) view.findViewById(R.id.completed_btn);
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				getActivity().runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						serving_btn_listener();
-					}
-				});
-			}
-		}, 500);
+		serving_btn_listener();
 		return view;
 	}
 
@@ -809,58 +795,60 @@ public class OrderFragment extends BaseFragment implements IXListViewListener {
 	 * get order id from order item by event bus
 	 */
 	public void onEvent(OrderListAdapterEvent event) {
-		switch (event.getText()) {
-		case "RefeshServingOrderList":
-		case "ShanChuDingDan":
-		case "OrderSucess":
-			orderAdapterServing = null;
-			serving_btn_listener();
-			pageTagServing = 2;
-			AppConfig.getInstance().setCanCreateOrder(true);
-			break;
-		case "RefeshCompletedOrderList":
-		case "PingJiaSucess":
-			orderAdapterCompleted = null;
-			completed_btn_listener();
-			break;
-		case "ZhiFuBaoPaySucess":
-		case "XianJinPaySucess":
-			((MainActivity) getActivity()).showdialog("支付成功！");
-			new Handler().postDelayed(new Runnable() {
-				public void run() {
-					orderAdapterServing = null;
-					serving_btn_listener();
-					pageTagServing = 2;
-				}
-			}, 50);
-			break;
-		case "YuEPaySucess":
-		case "ExtraIcardPaySucess":
-		case "WXPaySucess":
-			((MainActivity) getActivity()).showdialog("支付成功！");
-			orderAdapterServing = null;
-			serving_btn_listener();
-			pageTagServing = 2;
-			break;
-		case "NoNetQuXiaoDingDan":
-			noNetDo();
-			break;
-		case "WxHuiDiaoSucess":
-			getOrderIsShare();
-		case "TopServingOrderList":
-			if ((XListViewTag == true) && servingOrderList.size() > 2
-					&& isShowPage) {
-				order_xListView.post(new Runnable() {
-					@Override
+		if (isAdded()) {
+			switch (event.getText()) {
+			case "RefeshServingOrderList":
+			case "ShanChuDingDan":
+			case "OrderSucess":
+				orderAdapterServing = null;
+				serving_btn_listener();
+				pageTagServing = 2;
+				AppConfig.getInstance().setCanCreateOrder(true);
+				break;
+			case "RefeshCompletedOrderList":
+			case "PingJiaSucess":
+				orderAdapterCompleted = null;
+				completed_btn_listener();
+				break;
+			case "ZhiFuBaoPaySucess":
+			case "XianJinPaySucess":
+				((MainActivity) getActivity()).showdialog("支付成功！");
+				new Handler().postDelayed(new Runnable() {
 					public void run() {
-						order_xListView.smoothScrollToPosition(0);
-						order_xListView.setSelection(0);
+						orderAdapterServing = null;
+						serving_btn_listener();
+						pageTagServing = 2;
 					}
-				});
+				}, 50);
+				break;
+			case "YuEPaySucess":
+			case "ExtraIcardPaySucess":
+			case "WXPaySucess":
+				((MainActivity) getActivity()).showdialog("支付成功！");
+				orderAdapterServing = null;
+				serving_btn_listener();
+				pageTagServing = 2;
+				break;
+			case "NoNetQuXiaoDingDan":
+				noNetDo();
+				break;
+			case "WxHuiDiaoSucess":
+				getOrderIsShare();
+			case "TopServingOrderList":
+				if ((XListViewTag == true) && servingOrderList.size() > 2
+						&& isShowPage) {
+					order_xListView.post(new Runnable() {
+						@Override
+						public void run() {
+							order_xListView.smoothScrollToPosition(0);
+							order_xListView.setSelection(0);
+						}
+					});
+				}
+				break;
+			default:
+				break;
 			}
-			break;
-		default:
-			break;
 		}
 	}
 

@@ -55,9 +55,12 @@
 
     <!-- 添加地址页面配色 -->
     <color name="add_address_font_color">#BBBBBB</color>
+    <color name="delivery_color">#cacaca</color>
 
     <!-- 地图圆形颜色 -->
     <color name="transparency">#00000000</color>
+    <color name="deliveryBottom">#a3d3ff</color>
+    <color name="deliveryTop">#3f9ff8</color>
 
     <!-- 订单条目分类颜色 -->
     <color name="order_title_price">#ffebdb</color>

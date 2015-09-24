@@ -107,7 +107,7 @@ public class CouponActivityListAdapter extends BasicAdapter {
 
 		if (mBean.getDesStr() == "无限制"
 				&& mBean.getExclusive_channels_display().contains("无支付限制")) {
-			mViewHolder.mUseLimit.setVisibility(View.GONE);
+			mViewHolder.mUseLimit.setText("无支付限制");
 		} else {
 			if (mBean.getDesStr() != "无限制") {
 				mViewHolder.mUseLimit.setText(Html

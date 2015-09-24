@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.edaixi.activity"
-    android:versionCode="10"
-    android:versionName="3.21" >
+    android:versionCode="11"
+    android:versionName="3.3" >
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -32,27 +32,11 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
-        <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="b616d1efd59036a067697b93fce880d7" />
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="54b4c125fd98c5507900089a" />
-        <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="YiYongHui" />
-        <meta-data
-            android:name="TD_APP_ID"
-            android:value="8BE8917DD473373F32B6CBC6165513CD" />
-        <meta-data
-            android:name="TD_CHANNEL_ID"
-            android:value="YiYongHui" />
-        <meta-data
-            android:name="MW_APPID"
-            android:value="7M0UFVTG32CJGVZA73B9E8ZNFAX8GWI2" />
-        <meta-data
-            android:name="MW_CHANNEL"
-            android:value="YiYongHui" />
+        <meta-data            android:name="com.amap.api.v2.apikey"            android:value="b616d1efd59036a067697b93fce880d7" />
+        <meta-data            android:name="UMENG_APPKEY"            android:value="54b4c125fd98c5507900089a" />
+        <meta-data            android:name="UMENG_CHANNEL"            android:value="BaiDuBaiTong" />
+        <meta-data            android:name="TD_APP_ID"            android:value="8BE8917DD473373F32B6CBC6165513CD" />
+        <meta-data            android:name="TD_CHANNEL_ID"            android:value="BaiDuBaiTong" />
 
         <activity
             android:name="com.edaixi.activity.SplashActivity"
@@ -70,7 +54,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="edaixi" />
+                <data android:scheme= "edaixi" />
             </intent-filter>
         </activity>
         <activity
@@ -119,7 +103,8 @@
             android:name="com.edaixi.activity.OrderDetialActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.edaixi.activity.ClothingDetialActivity"
+            android:name="com.edaixi.activity.DeliveryInfoActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.edaixi.activity.CityListActivity"
@@ -164,11 +149,6 @@
 
                 <data android:scheme="wx98a4962c2ef2e5a6" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="com.edaixi.activity.GuideHomeTipsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent" >
         </activity>
         <activity
             android:name="com.edaixi.activity.GuideOrderTipsActivity"
@@ -408,8 +388,9 @@
             android:name="com.zxinsight.common.base.MWActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|navigation"
             android:exported="true" />
- 
-
+ 
+        <meta-data            android:name="MW_APPID"            android:value="7M0UFVTG32CJGVZA73B9E8ZNFAX8GWI2" />
+        <meta-data            android:name="MW_CHANNEL"            android:value="BaiDuBaiTong" />
         <!-- 魔窗注册代码 -->
     </application>
 

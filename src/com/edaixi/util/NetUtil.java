@@ -219,6 +219,7 @@ public class NetUtil {
 					String datajson = json.getString("data");
 					Userbean userbean = gson.fromJson(datajson, Userbean.class);
 					saveUtils.saveStrSP("user_token", userbean.getUsertoken());
+					LogUtil.e("获取到的user_token---:"+userbean.getUsertoken());
 					saveUtils.saveStrSP("user_id", userbean.getUser_id());
 					mAppConfig = AppConfig.getInstance();
 					mAppConfig.setUserId(userbean.getUser_id());

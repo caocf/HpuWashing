@@ -55,8 +55,8 @@ public class SplashActivity extends BaseActivity implements OnClickListener {
 		TCAgent.setReportUncaughtExceptions(false);
 		// 初始化听云监测
 		// 注释听云注册
-		NBSAppAgent.setLicenseKey("a795bf585e584e05bd435982c27625f7")
-				.withLocationServiceEnabled(true).start(this);
+		// NBSAppAgent.setLicenseKey("a795bf585e584e05bd435982c27625f7")
+		// .withLocationServiceEnabled(true).start(this);
 
 		// 初始化网页打开应用的schema
 		Intent intent = getIntent();

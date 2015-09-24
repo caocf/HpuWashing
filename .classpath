@@ -12,8 +12,8 @@
 	<classpathentry exported="true" kind="lib" path="libs/umeng-update-v2.6.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/Cashier_SDK-v4.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/MagicWindowSDK.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/TalkingDataAnalytics_V1.2.74.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/du.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/TalkingDataAnalytics_V1.2.79.jar"/>
 	<classpathentry kind="src" path="src-gen"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>

@@ -242,7 +242,6 @@ public class CouponActivity extends BaseActivity {
 			}
 			switch (msg.what) {
 			case REFRESH_CORRECT_CODE: {
-				LogUtil.e("---获取优惠券信息成功--" + msg.obj);
 				Type contentType = new TypeToken<GetCouponsBean>() {
 				}.getType();
 				GetCouponsBean mInfo = null;
@@ -362,18 +361,14 @@ public class CouponActivity extends BaseActivity {
 
 	// 处理优惠券数据，重新排列优惠券顺序和是否可用
 	public CouponsDataSet judgeCouponData(CouponsDataSet mListDataSet) {
-		LogUtil.e("订单类型--+" + category_IdString);
 		CouponsDataSet allCouponsDataSet = new CouponsDataSet();
 		CouponsDataSet availableCouponsDataSet = new CouponsDataSet();
 		CouponsDataSet unavailableCouponsDataSet = new CouponsDataSet();
 		for (int i = 0; i < mListDataSet.size(); i++) {
-			LogUtil.e("优惠券类型--+"
-					+ (mListDataSet.getIndexBean(i).getCategory_id()));
 			if ((mListDataSet.getIndexBean(i).isValid())
 					&& ((mListDataSet.getIndexBean(i).getCategory_id()
-							.equals(category_IdString))
-							|| mListDataSet.getIndexBean(i).getCategory_id()
-									.equals("0"))) {
+							.equals(category_IdString)) || mListDataSet
+							.getIndexBean(i).getCategory_id().equals("0"))) {
 				availableCouponsDataSet.addBean(mListDataSet.getIndexBean(i));
 			} else {
 				mListDataSet.getIndexBean(i).setValid(-1);

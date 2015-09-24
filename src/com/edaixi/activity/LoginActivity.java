@@ -211,8 +211,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			break;
 		case R.id.login_btn:
 			// 登录
-			if (is_get_login) {
-
+			if (true) {
 				phone_editstr1 = phone_edit.getText().toString();
 				auth_code_editstr = auth_code_edit.getText().toString();
 				if (TextUtils.isEmpty(phone_editstr1)) {

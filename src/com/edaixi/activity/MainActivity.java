@@ -8,7 +8,6 @@ package com.edaixi.activity;
 
 import java.io.File;
 
-import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,11 +25,9 @@ import com.edaixi.adapter.MyViewPagerAdapter;
 import com.edaixi.data.AppConfig;
 import com.edaixi.data.EdaixiApplication;
 import com.edaixi.data.KeepingData;
-import com.edaixi.fragment.HomeFragment;
 import com.edaixi.fragment.HomeFragmentBak;
 import com.edaixi.fragment.MineFragment;
 import com.edaixi.fragment.OrderFragment;
-import com.edaixi.util.LogUtil;
 import com.edaixi.util.OrderListAdapterEvent;
 import com.edaixi.util.SaveUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -102,7 +99,6 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 		vp.setOffscreenPageLimit(3);
 		mAdapter = null;
 		fms_1s = new Fragment[3];
-		//fms_1s[0] = new HomeFragment();
 		fms_1s[0] = new HomeFragmentBak();
 		fms_1s[1] = new OrderFragment();
 		fms_1s[2] = new MineFragment();
@@ -157,7 +153,6 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 		MobclickAgent.updateOnlineConfig(this);
 		// 获取友盟在线参数
 		String UpdateParas = MobclickAgent.getConfigParams(this, "UpdateParas");
-		LogUtil.e("获取友盟在线参数"+UpdateParas);
 		UmengUpdateAgent.update(this);
 		UmengUpdateAgent.forceUpdate(MainActivity.this);
 		if (TextUtils.isEmpty(UpdateParas)) {

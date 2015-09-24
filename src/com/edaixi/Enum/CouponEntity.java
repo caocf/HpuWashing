@@ -14,7 +14,6 @@ public class CouponEntity implements Serializable {
 	private static final long serialVersionUID = -6281049328459271460L;
 	private static final String UNLIMITED = "无限制";
 	private static final String NORMAL_DES_FORMAT = "满%d可用";
-	private static final String LIFETIME_DES_FORMAT = " %s 至 %s 有效";
 	private int mId;
 	private String mSnCode;
 	private boolean mUsed;
@@ -194,22 +193,6 @@ public class CouponEntity implements Serializable {
 		}
 		return String.format(Locale.getDefault(), NORMAL_DES_FORMAT,
 				mCouponLeastPrice);
-	}
-
-	public String getLifeTimeStr() {
-		return String.format(Locale.getDefault(), LIFETIME_DES_FORMAT,
-				formatCouponDate(mCouponStartTime),
-				formatCouponDate(mCouponEndTime));
-	}
-
-	public StringBuffer formatCouponDate(String couponDate) {
-		StringBuffer sBuffer = new StringBuffer();
-		sBuffer.append(couponDate.substring(5, 7).trim());
-		sBuffer.append("月");
-		sBuffer.append(couponDate.substring(8, 10).trim());
-		sBuffer.append("日 ");
-		sBuffer.append(couponDate.substring(10).trim());
-		return sBuffer;
 	}
 
 	@Override

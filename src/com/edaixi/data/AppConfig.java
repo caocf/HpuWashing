@@ -34,6 +34,7 @@ public class AppConfig {
 	private boolean isCanCreateOrder;
 	private boolean isOpenApp;
 	private boolean isFillAddressAuto;
+	private boolean isCanUseRecharge;
 	private String cityareastr;
 	private String mCurrentCity;
 	private String loctioncity;
@@ -43,6 +44,14 @@ public class AppConfig {
 	private String cancleOrderString;
 	private String locationLatString;
 	private String locationLogString;
+
+	public boolean isCanUseRecharge() {
+		return isCanUseRecharge;
+	}
+
+	public void setCanUseRecharge(boolean isCanUseRecharge) {
+		this.isCanUseRecharge = isCanUseRecharge;
+	}
 
 	public boolean isFillAddressAuto() {
 		return isFillAddressAuto;
@@ -220,7 +229,7 @@ public class AppConfig {
 		this.loctioncity = loctioncity;
 	}
 
-	public static final String ALREADYLOGIN = "用户已经登陆";
+	public static final String ALREADYLOGIN = "请您登陆";
 
 	public String getmShareOrderId() {
 		return mShareOrderId;

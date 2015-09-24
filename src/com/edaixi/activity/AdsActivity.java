@@ -40,7 +40,6 @@ import com.edaixi.modle.HttpCommonBean;
 import com.edaixi.modle.OpenCityBean;
 import com.edaixi.util.Constants;
 import com.edaixi.util.DensityUtil;
-import com.edaixi.util.LogUtil;
 import com.edaixi.util.MyhttpUtils;
 import com.edaixi.util.PinYin;
 import com.edaixi.util.SaveUtils;
@@ -138,7 +137,6 @@ public class AdsActivity extends BaseActivity implements AMapLocationListener,
 									.getFuwufanwei());
 							openCityModle.setInitials(openCityBean
 									.getInitials());
-							LogUtil.e("-" + openCityModle.toString());
 							openCityModleDao.insert(openCityModle);
 						}
 						List<OpenCityModle> loadAll = openCityModleDao
@@ -302,24 +300,16 @@ public class AdsActivity extends BaseActivity implements AMapLocationListener,
 					.replace(aMapLocation.getCity(), "")
 					.replace(aMapLocation.getDistrict(), "")
 					.replace(aMapLocation.getProvince(), "");
-			LogUtil.e("定位地址------" + formatAddressFill);
 			saveUtils.saveStrSP(KeepingData.USER_ADDRESS_FILL,
 					formatAddressFill);
 
 			String search_user_city = aMapLocation.getCity();
 			String search_user_area = aMapLocation.getDistrict();
-			LogUtil.e("formatAddress  " + formatAddress);
-			LogUtil.e("search_user_city" + search_user_city);
 			saveUtils.saveStrSP(KeepingData.City_Code,
 					aMapLocation.getCityCode());
 			saveUtils.saveStrSP(KeepingData.Current_City,
 					search_user_city.replace("市", ""));
 			saveUtils.saveStrSP(KeepingData.Current_Area, search_user_area);
-			LogUtil.e("search_user_city" + search_user_city);
-			LogUtil.e("current-city"
-					+ saveUtils.getStrSP(KeepingData.Current_City));
-			LogUtil.e("current-area"
-					+ saveUtils.getStrSP(KeepingData.Current_Area));
 			if (search_user_city != null) {
 				if ((saveUtils.getStrSP(KeepingData.User_City) != "")) {
 					if (PinYin.getPinYin(
@@ -406,8 +396,6 @@ public class AdsActivity extends BaseActivity implements AMapLocationListener,
 
 				String search_user_city = result.getRegeocodeAddress()
 						.getCity();
-				LogUtil.e("formatAddress  " + formatAddress);
-				LogUtil.e("search_user_city00" + search_user_city);
 				saveUtils.saveStrSP(KeepingData.City_Code, result
 						.getRegeocodeAddress().getCityCode());
 				int indexCity = formatAddress.indexOf("市");
@@ -428,10 +416,6 @@ public class AdsActivity extends BaseActivity implements AMapLocationListener,
 				}
 				saveUtils.saveStrSP(KeepingData.Current_City,
 						search_user_city.replace("市", ""));
-				LogUtil.e("user_city-city" + user_city);
-				LogUtil.e("search_user_city" + search_user_city);
-				LogUtil.e("current-city"
-						+ saveUtils.getStrSP(KeepingData.Current_City));
 				if (search_user_city != null) {
 					if ((saveUtils.getStrSP(KeepingData.User_City) != "")) {
 						if (PinYin.getPinYin(

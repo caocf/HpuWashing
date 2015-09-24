@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -184,14 +185,19 @@ public class OrderListAdapter extends BaseAdapter {
 									@Override
 									public void onClick(View v) {
 										// 拨打取件员电话
-										if (orderItem.getCourier_phone_qu()
-												.length() != 0) {
-											Uri uriQu = Uri.parse("tel:"
-													+ orderItem
-															.getCourier_phone_qu());
-											Intent intentQu = new Intent(
-													Intent.ACTION_DIAL, uriQu);
-											context.startActivity(intentQu);
+										try {
+											if (orderItem.getCourier_phone_qu()
+													.length() > 1) {
+												Uri uriQu = Uri.parse("tel:"
+														+ orderItem
+																.getCourier_phone_qu());
+												Intent intentQu = new Intent(
+														Intent.ACTION_DIAL,
+														uriQu);
+												context.startActivity(intentQu);
+											}
+										} catch (ActivityNotFoundException exception) {
+											return;
 										}
 									}
 								});
@@ -210,14 +216,19 @@ public class OrderListAdapter extends BaseAdapter {
 									@Override
 									public void onClick(View v) {
 										// 拨打取件员电话
-										if (orderItem.getCourier_phone_qu()
-												.length() != 0) {
-											Uri uriQu = Uri.parse("tel:"
-													+ orderItem
-															.getCourier_phone_qu());
-											Intent intentQu = new Intent(
-													Intent.ACTION_DIAL, uriQu);
-											context.startActivity(intentQu);
+										try {
+											if (orderItem.getCourier_phone_qu()
+													.length() > 1) {
+												Uri uriQu = Uri.parse("tel:"
+														+ orderItem
+																.getCourier_phone_qu());
+												Intent intentQu = new Intent(
+														Intent.ACTION_DIAL,
+														uriQu);
+												context.startActivity(intentQu);
+											}
+										} catch (ActivityNotFoundException exception) {
+											return;
 										}
 									}
 								});
@@ -247,10 +258,14 @@ public class OrderListAdapter extends BaseAdapter {
 								@Override
 								public void onClick(View v) {
 									// 拨打客服电话
-									Uri uri = Uri.parse("tel:4008187171");
-									Intent intent = new Intent(
-											Intent.ACTION_DIAL, uri);
-									context.startActivity(intent);
+									try {
+										Uri uri = Uri.parse("tel:4008187171");
+										Intent intent = new Intent(
+												Intent.ACTION_DIAL, uri);
+										context.startActivity(intent);
+									} catch (ActivityNotFoundException exception) {
+										return;
+									}
 								}
 							});
 					break;
@@ -274,10 +289,14 @@ public class OrderListAdapter extends BaseAdapter {
 								@Override
 								public void onClick(View v) {
 									// 拨打客服电话
-									Uri uri = Uri.parse("tel:4008187171");
-									Intent intent = new Intent(
-											Intent.ACTION_DIAL, uri);
-									context.startActivity(intent);
+									try {
+										Uri uri = Uri.parse("tel:4008187171");
+										Intent intent = new Intent(
+												Intent.ACTION_DIAL, uri);
+										context.startActivity(intent);
+									} catch (ActivityNotFoundException exception) {
+										return;
+									}
 								}
 							});
 					break;
@@ -303,13 +322,17 @@ public class OrderListAdapter extends BaseAdapter {
 								public void onClick(View v) {
 									// 拨打送件员电话
 									if (orderItem.getCourier_phone_song()
-											.length() != 0) {
-										Uri uriSong = Uri.parse("tel:"
-												+ orderItem
-														.getCourier_phone_song());
-										Intent intentSong = new Intent(
-												Intent.ACTION_DIAL, uriSong);
-										context.startActivity(intentSong);
+											.length() > 1) {
+										try {
+											Uri uriSong = Uri.parse("tel:"
+													+ orderItem
+															.getCourier_phone_song());
+											Intent intentSong = new Intent(
+													Intent.ACTION_DIAL, uriSong);
+											context.startActivity(intentSong);
+										} catch (ActivityNotFoundException exception) {
+											return;
+										}
 									}
 								}
 							});

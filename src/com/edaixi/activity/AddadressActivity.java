@@ -25,8 +25,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.geocoder.GeocodeAddress;
 import com.amap.api.services.geocoder.GeocodeQuery;
@@ -111,6 +109,7 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case CREATADSSUCCED:
+				LogUtil.e("创建地址--------------成功返回"+msg.obj);
 				HttpCommonBean jsonCommonBean = gson.fromJson(
 						(String) msg.obj.toString(), HttpCommonBean.class);
 				if (jsonCommonBean.isRet()) {
@@ -145,6 +144,7 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 
 				break;
 			case CREATADSFAILD:
+				LogUtil.e("创建地址--------------失败返回"+msg.obj);
 				showdialog("地址创建失败");
 				break;
 			case GETADSSUCCED:
@@ -407,6 +407,8 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 						.equals(AddressIntentdata.ADDADS)) {
 					titel_text.setText("添加");
 					// --------添加地址---新逻辑------------------------
+					tel_edit.setText(saveUtils.getStrSP(KeepingData.PHONE));
+					clear_btn_tel.setVisibility(View.INVISIBLE);
 					if (!AppConfig.getInstance().isLocationFail()) {
 						// 定位成功
 						verifyCityArea(
@@ -515,17 +517,6 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 			if (IS_SHOW_CITYPOP && IS_SHOW_AREAPOP) {
 				showCityAreaSelect();
 			}
-			// -----------------------------------------------
-			// if (getIntent().getExtras().get("FROM")
-			// .equals(AddressIntentdata.FROMADSLIST)) {
-			// invisibleInputmethod(rl_city_area);
-			// showCityAreaSelect();
-			// } else if (getIntent().getExtras().get("FROM")
-			// .equals(AddressIntentdata.FROMPLACEORDER)) {
-			// invisibleInputmethod(rl_city_area);
-			// showAreaSelect();
-			// }
-			// -----------------------------------------------
 			break;
 		case R.id.tv_address_edit:
 			invisibleInputmethod(tv_address_edit);
@@ -568,6 +559,7 @@ public class AddadressActivity extends BaseActivity implements OnClickListener,
 			tv_lady.setCompoundDrawables(null, null, drawableLadyDefault, null);
 			break;
 		case R.id.add_save_btn:
+			LogUtil.e("点击地址保持页面保存按钮");
 			invisibleInputmethod(add_save_btn);
 			if (!NetUtil.getNetworkState(this)) {
 				showdialog("网络不可用，请检查您的网络连接");

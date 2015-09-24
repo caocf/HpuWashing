@@ -118,19 +118,14 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 			case CITYSUCESS:
 				HttpCommonBean conmonBeanCity = gson.fromJson((String) msg.obj,
 						HttpCommonBean.class);
-				String cityResultSucess = (String) msg.obj;
-				Log.d("Citys--sucess", cityResultSucess);
 				if (conmonBeanCity.isRet()) {
 					cityAreaBean = gson.fromJson(conmonBeanCity.getData(),
 							CitysAreaBean.class);
 					AppConfig.getInstance().setCityareastr(
 							conmonBeanCity.getData());
-					Log.d("Citys--area", cityAreaBean.toString());
 				}
 				break;
 			case CITYFAIL:
-				String cityResultFail = (String) msg.obj;
-				Log.d("Citys--fail", cityResultFail);
 				break;
 			case GETADSSUCCED:
 				is_create_address = true;
@@ -139,7 +134,6 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 				HttpCommonBean mInfo = null;
 				try {
 					mInfo = gson.fromJson((String) msg.obj, contentType);
-					LogUtil.e("地址列表数据----来自下单页面" + msg.obj);
 				} catch (Exception e) {
 					e.printStackTrace();
 					return;
@@ -160,13 +154,12 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 							for (AddressBean addressbean : mMyAddressDataSet) {
 								if (addressbean.isFrequently_address()
 										|| is_fill_address) {
-									LogUtil.e("---------000555--------------");
-									if (AppConfig.getInstance().isFillAddressAuto()
+									if (AppConfig.getInstance()
+											.isFillAddressAuto()
 											&& addressbean
 													.getCity()
 													.equals(saveUtils
 															.getStrSP(KeepingData.User_City))) {
-										LogUtil.e("---------000666--------------");
 										address_info
 												.setVisibility(View.VISIBLE);
 										select_add_text
@@ -210,6 +203,7 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 			case GETADSFAILD:
 				break;
 			case GRTDELFEESUCCED:
+				LogUtil.e("获取运费成功----"+msg.obj);
 				HttpCommonBean conmonBeanFee = gson.fromJson((String) msg.obj,
 						HttpCommonBean.class);
 				if (conmonBeanFee.isRet()) {
@@ -248,6 +242,7 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 				}
 				break;
 			case GRTDELFEEFAILED:
+				LogUtil.e("获取运费失败----"+msg.obj);
 				point_text.setVisibility(View.INVISIBLE);
 				deli_fee.setVisibility(View.INVISIBLE);
 				break;
@@ -502,7 +497,8 @@ public class PlaceorderActivity extends BaseActivity implements OnClickListener 
 						&& bannerlistbean.getInner_url() != null) {
 					Intent intent = new Intent(getActivity(), WebActivity.class);
 					BannerlistBean bannerlistBeansBean = new BannerlistBean();
-					bannerlistBeansBean.setTitle(bannerlistbean
+					bannerlistBeansBean.setTitle("价目中心");
+					bannerlistBeansBean.setInner_title(bannerlistbean
 							.getInner_title());
 					bannerlistBeansBean.setUrl(bannerlistbean.getInner_url());
 					intent.putExtra("bannerlistbean", bannerlistBeansBean);

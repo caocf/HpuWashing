@@ -34,14 +34,14 @@ public class EdaixiApplication extends Application {
 		if (mInstance == null) {
 			mInstance = this;
 		}
-		 Main.go(this, "YiYongHui", null);
+		// Main.go(this, "BaiDuBaiTong", null);
 		// avoscloud 测试id ,key
-		// AVOSCloud.initialize(this,
-		// "bi2vv14al3bxwdqu5xmaamuy94ru3b3cjuitj4y8rnc6khx1",
-		// "sq828q7rgro7p6unkbphcrg7lp1chiq82p9geurhojmjcbrt");
-		AVOSCloud.initialize(this,
-				"6iebvdj6vkz13nxmjf3fzniw5h37prbv0bclvrlp67i9dhsx",
-				"doe8qr2p3g0x7r8ldi2judtyvsdro2jfnwkygenh251yla7a");
+		 AVOSCloud.initialize(this,
+		 "bi2vv14al3bxwdqu5xmaamuy94ru3b3cjuitj4y8rnc6khx1",
+		 "sq828q7rgro7p6unkbphcrg7lp1chiq82p9geurhojmjcbrt");
+//		AVOSCloud.initialize(this,
+//				"6iebvdj6vkz13nxmjf3fzniw5h37prbv0bclvrlp67i9dhsx",
+//				"doe8qr2p3g0x7r8ldi2judtyvsdro2jfnwkygenh251yla7a");
 		AVOSCloud.useAVCloudCN();
 		initPush();
 		com.tendcloud.tenddata.TCAgent.init(getApplicationContext());

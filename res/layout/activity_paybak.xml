@@ -18,6 +18,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:contentDescription="@null"
             android:src="@drawable/login_back_btn" />
 
         <TextView
@@ -45,7 +46,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
-            android:text="订单编号： 15055555  456123"
             android:textColor="#292727" />
 
         <TextView
@@ -84,7 +84,6 @@
             android:drawableLeft="@drawable/money_icon"
             android:gravity="center_horizontal"
             android:paddingTop="5dp"
-            android:text="257.00"
             android:textColor="#129ef3"
             android:textSize="20sp" />
     </LinearLayout>
@@ -101,7 +100,6 @@
             style="@style/textsize_3"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_below="@+id/order_text"
             android:layout_marginLeft="15dp"
             android:drawableLeft="@drawable/coupon_icon"
             android:gravity="center_vertical"
@@ -116,8 +114,8 @@
             android:drawableRight="@drawable/next"
             android:gravity="center_vertical"
             android:paddingRight="10dp"
-            android:text="请选择优惠券"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_pay_coupon_value"
@@ -125,9 +123,9 @@
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
+            android:drawableRight="@drawable/next"
             android:gravity="center_vertical"
-            android:text=""
-            android:textColor="@color/yellow"
+            android:textColor="@color/red"
             android:textSize="14sp" />
     </RelativeLayout>
 
@@ -188,9 +186,8 @@
             <com.edaixi.view.SingleView
                 android:id="@+id/view_pay_type_luxury"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" 
-                android:visibility="gone"
-                >
+                android:layout_height="wrap_content"
+                android:visibility="gone" >
             </com.edaixi.view.SingleView>
 
             <com.edaixi.view.SingleView
@@ -209,13 +206,11 @@
                 android:id="@+id/bt_pay_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/order_pay_btn"
                 android:gravity="center"
-                android:text="需支付  25.00"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
         </LinearLayout>

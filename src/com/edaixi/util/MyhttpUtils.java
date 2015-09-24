@@ -124,6 +124,7 @@ public class MyhttpUtils {
 
 			@Override
 			public void onStart() {
+				LogUtil.e("url--------get-----" + url);
 				if (isshow) {
 					((Activity) context).runOnUiThread(new Runnable() {
 						@Override
@@ -181,6 +182,7 @@ public class MyhttpUtils {
 						}
 					}
 				});
+				
 				LogUtil.e("---url---"+url+"請求返回結果-get"+result.result);
 				AppConfig appconfig = AppConfig.getInstance();
 				JSONObject json;
